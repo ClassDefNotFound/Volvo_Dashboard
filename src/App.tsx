@@ -8,7 +8,9 @@ function App() {
     // Initial API call to get all available vehicles
     async function handleVehiclesRequest() {
       const vehicles = await getVehicles();
-      console.log(`recevied response for vehicles: ${vehicles.data}`);
+      console.log(
+        `received response for vehicles: ${JSON.stringify(vehicles.data)}`,
+      );
       setVins(vehicles.data);
     }
 

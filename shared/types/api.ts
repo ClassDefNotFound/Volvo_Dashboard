@@ -1,6 +1,16 @@
 // Volvo API response types
 
 /**
+ * Response from token exchange
+ */
+export type TokenResponse = {
+  access_token: string;
+  refresh_token: string;
+  token_type: "Bearer";
+  expires_in: number; // Expiration time in seconds
+};
+
+/**
  * Response from /vehicles endpoint
  * @returns an array of VINs associated with the account
  */
