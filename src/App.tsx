@@ -1,37 +1,21 @@
 import { useEffect, useState } from "react";
-import { getVehicles, getVehicleDetails } from "./api/volvo_api";
+import { getAuthStatus } from "./api/volvo_api";
+import LoginPage from "./components/login/LoginPage";
+import DashboardPage from "./components/dashboard/DashboardPage";
+
+import "the-new-css-reset/css/reset.css";
+import "./App.css";
 
 function App() {
-  const [vins, setVins] = useState<string[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    // Initial API call to get all available vehicles
-    async function handleVehiclesRequest() {
-      const vehicles = await getVehicles();
-      console.log(
-        `received response for vehicles: ${JSON.stringify(vehicles.data)}`,
-      );
-      setVins(vehicles.data);
-    }
-
-    handleVehiclesRequest();
+    getAuthStatus()
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false));
   }, []);
 
-  //Testing API calls
-  async function requestDetails() {
-    if (vins.length !== 0) {
-      const testVin = vins[0];
-      const vehicleDetails = await getVehicleDetails(testVin);
-      console.log(vehicleDetails);
-    }
-  }
-
-  return (
-    <div>
-      Hello World!
-      <button onClick={requestDetails}>Request Vin for first vehicle</button>
-    </div>
-  );
+  return <>{isAuthenticated ? <LoginPage /> : <DashboardPage />}</>;
 }
 
 export default App;

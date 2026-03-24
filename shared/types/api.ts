@@ -11,11 +11,31 @@ export type TokenResponse = {
 };
 
 /**
+ * Response from /auth/status
+ */
+export type AuthStatus = {
+  authenticated: boolean;
+  mode?: "local";
+  expiresAt?: number;
+};
+
+/**
+ * Response error
+ */
+export type ErrorResponse = {
+  error: string;
+};
+
+export type Vin = {
+  vin: string;
+};
+
+/**
  * Response from /vehicles endpoint
  * @returns an array of VINs associated with the account
  */
 export type VehiclesResponse = {
-  data: string[];
+  data: Vin[];
 };
 
 /**

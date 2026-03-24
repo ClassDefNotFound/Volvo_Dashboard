@@ -19,7 +19,9 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["./shared/*"],
+      "@components/*": ["./src/components/*"],
+      "@api/*": ["./src/api/*"]
     },
 
     /* Linting */

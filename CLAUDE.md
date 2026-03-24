@@ -4,53 +4,73 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Volvo Dashboard is a React + TypeScript frontend application that interfaces with the Volvo Connected Vehicle API. The app fetches vehicle data (VINs, engine status, etc.) from a local backend server.
+Volvo Dashboard is a full-stack React + Express + TypeScript application that interfaces with the Volvo Connected Vehicle API. It consists of a Vite-powered frontend and an Express backend that proxies requests to Volvo's API.
 
 ## Development Commands
 
 ```bash
-npm run dev      # Start development server (Vite with HMR)
-npm run build    # Type-check with tsc and build for production
-npm run lint     # Run ESLint on all files
-npm run preview  # Preview production build locally
+# Frontend only
+npm run dev          # Start Vite dev server (HMR)
+npm run build        # Type-check with tsc and build for production
+npm run lint         # Run ESLint on all files
+
+# Backend only
+npm run dev:server   # Start Express server with tsx watch
+
+# Full stack (Redis + server + client)
+npm run dev:all      # Starts Docker Redis, then server + client concurrently
+
+# Docker (Redis)
+npm run docker:up    # Start Redis container
+npm run docker:down  # Stop Redis container
+npm run docker:logs  # Tail Redis logs
 ```
 
 ## Architecture
 
-### API Layer
-- All Volvo API interactions are centralized in `src/api/volvo_api.ts`
-- Uses axios for HTTP requests to a local backend at `http://localhost:3000`
-- API functions return Promises with typed data
-- The backend server (not part of this repo) must be running separately on port 3000
+### Backend (`server/`)
+- **Entry point**: `server/server.ts` — Express app with CORS, session middleware, route mounting
+- **Config**: `server/config.ts` — centralized env var loading with local/OAuth mode detection
+- **Routes**: `server/routes/auth.ts` (OAuth login/callback/status/logout), `server/routes/api.ts` (Volvo API proxy)
+- **Redis**: `server/redis-store.ts` — Redis client + session store setup (file renamed from `redis.ts` to avoid shadowing the `redis` npm package when `baseUrl: "."` is set in tsconfig)
+- **Auth modes**:
+  - **Local mode**: `ACCESS_TOKEN` set without `CLIENT_ID`/`CLIENT_SECRET` — uses static token, skips OAuth
+  - **OAuth mode**: Full Authorization Code flow with PKCE, Redis-backed sessions, automatic token refresh
+- **Runtime**: Uses `tsx watch` (not ts-node/nodemon) for Node.js v24 ESM compatibility
+- Server runs on port 3000 by default
 
-### Component Structure
-- Currently minimal: single `App.tsx` component in `src/`
-- No component library or routing setup yet
-- Direct function calls to API layer from components
+### Frontend (`src/`)
+- **API layer**: `src/api/volvo_api.ts` — axios calls to backend, typed with shared types
+- **Components**: `src/App.tsx` conditionally renders `LoginPage` or `DashboardPage` based on auth status
+  - `src/components/login/LoginPage.tsx` — login form
+  - `src/components/dashboard/DashboardPage.tsx` — main dashboard (WIP)
+- **Base URL**: Configured via `VITE_BASE_URL` env var (points to backend)
+- **UI Library**: MUI (Material UI) v7
+- **CSS Reset**: Uses `the-new-css-reset` — imported in `App.tsx`
+
+### Shared Types (`shared/types/`)
+- `shared/types/api.ts` — TypeScript types for all Volvo API responses and commands
+- `shared/types/index.ts` — barrel export
+- Path alias `@shared/*` maps to `shared/*` in both frontend and server tsconfigs
 
 ### Environment Configuration
-- Environment variables are stored in `src/.env.local` (non-standard location)
-- Contains backend configuration (PORT, BASE_URL) and Volvo API credentials (CLIENT_ID, VCC_API_KEY, ACCESS_TOKEN)
-- Note: Standard practice would be to place .env files in the project root and prefix with VITE_ for Vite access
+- **Frontend**: `.env.local` with `VITE_`-prefixed vars for Vite access
+- **Server**: `server/.env` with `VCC_API_KEY`, `ACCESS_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`, `BASE_URL`, `REDIS_URL`
+- Server config validates required env vars at startup based on detected mode
 
 ## Technology Stack
 
 - **Build Tool**: rolldown-vite (Vite with rolldown bundler, aliased via npm overrides)
-- **React**: Version 19.2.0
-- **TypeScript**: Strict mode enabled with comprehensive linting rules
+- **Frontend**: React 19, MUI v7, axios
+- **Backend**: Express 5, express-session, connect-redis, redis v5
+- **TypeScript**: Strict mode, `module: "nodenext"` (server), `moduleResolution: "bundler"` (frontend)
+- **Infrastructure**: Docker Compose for Redis, concurrently for parallel dev servers
 - **ESLint**: Configured with TypeScript, React Hooks, and React Refresh plugins
-- **Styling**: CSS files (App.css, index.css) - no styling framework currently
-
-## TypeScript Configuration
-
-- Target: ES2022
-- Strict mode enabled with additional linting flags (noUnusedLocals, noUnusedParameters)
-- Module resolution: bundler
-- JSX: react-jsx (React 17+ JSX transform)
 
 ## Notes
 
-- The project uses rolldown-vite instead of standard vite for improved build performance
 - No test framework is currently configured
-- No state management library (Redux, Zustand, etc.) is in place yet
-- The Volvo API access token in .env.local will expire and need periodic renewal
+- No state management library is in place yet
+- No routing library yet — auth/dashboard views are conditionally rendered
+- The Volvo developer portal test token expires every 15 minutes; full OAuth with refresh tokens requires deploying with CLIENT_ID/CLIENT_SECRET
+- The `redis` npm package requires `createRequire` workaround or file rename to avoid tsconfig `baseUrl` shadowing issues on Node.js v24
