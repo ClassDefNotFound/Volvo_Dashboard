@@ -2,7 +2,7 @@ import { Router } from "express";
 import crypto from "crypto";
 import axios from "axios";
 import { config } from "config.js";
-import type { TokenResponse } from "../../shared/types/api.js";
+import type { Token } from "../../shared/types/api.js";
 
 const router = Router();
 
@@ -86,7 +86,7 @@ router.get("/callback", async (req, res) => {
       code_verifier: codeVerifier,
     });
 
-    const tokenResponse = await axios.post<TokenResponse>(
+    const tokenResponse = await axios.post<Token>(
       config.volvoTokenUrl,
       params,
       {

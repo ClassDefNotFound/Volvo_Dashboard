@@ -21,7 +21,8 @@
     "paths": {
       "@shared/*": ["./shared/*"],
       "@components/*": ["./src/components/*"],
-      "@api/*": ["./src/api/*"]
+      "@api/*": ["./src/api/*"],
+      "@assets/*": ["./src/assets/*"]
     },
 
     /* Linting */
@@ -30,7 +31,8 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "allowUnreachableCode": false
   },
   "include": ["src"]
 }

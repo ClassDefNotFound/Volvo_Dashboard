@@ -3,7 +3,7 @@
 /**
  * Response from token exchange
  */
-export type TokenResponse = {
+export type Token = {
   access_token: string;
   refresh_token: string;
   token_type: "Bearer";
@@ -22,7 +22,7 @@ export type AuthStatus = {
 /**
  * Response error
  */
-export type ErrorResponse = {
+export type Error = {
   error: string;
 };
 
@@ -34,14 +34,14 @@ export type Vin = {
  * Response from /vehicles endpoint
  * @returns an array of VINs associated with the account
  */
-export type VehiclesResponse = {
+export type Vehicles = {
   data: Vin[];
 };
 
 /**
  * Response from /vin endpoint
  */
-export type VehicleDetailsResponse = {
+export type VehicleDetails = {
   vin: string;
   modelYear: number;
   gearBox: "AUTOMATIC" | "MANUAL";
@@ -68,7 +68,7 @@ export type VehicleDetailsResponse = {
 /**
  * Response from /engine endpoint
  */
-export type EngineDiagnosticsResponse = {
+export type EngineDiagnostics = {
   engineCoolantLevelWarning: {
     timestamp: string; // ISO-8601 format
     value: "UNSPECIFIED" | "NO_WARNING" | "TOO_LOW";
@@ -88,7 +88,7 @@ export type EngineDiagnosticsResponse = {
 /**
  * Response from /diagnostics endpoint
  */
-export type DiagnosticsResponse = {
+export type Diagnostics = {
   serviceWarning: {
     timestamp: string;
     value:
@@ -132,7 +132,7 @@ export type DiagnosticsResponse = {
 /**
  * Response from /brakes endpoint
  */
-export type BrakeStatusResponse = {
+export type BrakeStatus = {
   brakeFluidLevelWarning: {
     timestamp: string;
     value: "UNSPECIFIED" | "NO_WARNING" | "TOO_LOW";
@@ -144,7 +144,7 @@ type WindowAndLockStatusValues = "UNSPECIFIED" | "LOCKED" | "UNLOCKED" | "AJAR";
 /**
  * Response from /windows endpoint
  */
-export type WindowStatusResponse = {
+export type WindowStatus = {
   frontLeftWindow: {
     timestamp: string;
     value: WindowAndLockStatusValues;
@@ -170,7 +170,7 @@ export type WindowStatusResponse = {
 /**
  * Response from /doors endpoint
  */
-export type DoorAndLockStatusResponse = {
+export type DoorAndLockStatus = {
   centralLock: {
     timestamp: string;
     value: "UNSPECIFIED" | "LOCKED" | "UNLOCKED";
@@ -208,7 +208,7 @@ export type DoorAndLockStatusResponse = {
 /**
  * Response from /fuel endpoint
  */
-export type FuelStatusResponse = {
+export type FuelStatus = {
   fuelAmount: {
     timestamp: string;
     value: number;
@@ -223,7 +223,7 @@ export type FuelStatusResponse = {
 /**
  * Response from /engine_status endpoint
  */
-export type EngineStatusResponse = {
+export type EngineStatus = {
   timestamp: string;
   engineStatus: "STOPPED" | "RUNNING";
 };
@@ -231,7 +231,7 @@ export type EngineStatusResponse = {
 /**
  * Response from /odometer endpoint
  */
-export type OdometerStatusResponse = {
+export type OdometerStatus = {
   timestamp: string;
   value: number; // Odometer reading in kilometers
   unit: "km";
@@ -240,7 +240,7 @@ export type OdometerStatusResponse = {
 /**
  * Response from /statistics endpoint
  */
-export type StatisticsResponse = {
+export type Statistics = {
   averageFuelConsumption: {
     timestamp: string;
     value: number;
@@ -308,7 +308,7 @@ type TyreValues =
 /**
  * Response from /tyres endpoint
  */
-export type TyresStatusResponse = {
+export type TyresStatus = {
   frontLeft: {
     timestamp: string;
     value: TyreValues;
@@ -332,7 +332,7 @@ export type WarningValues = "UNSPECIFIED" | "NO_WARNING" | "FAILURE";
 /**
  * Response for /warnings endpoint
  */
-export type WarningsResponse = {
+export type Warnings = {
   brakeLightLeftWarning: {
     timestamp: string;
     value: WarningValues;
@@ -434,7 +434,7 @@ export type WarningsResponse = {
 /**
  * Response from commands/climitization_start/_stop endpoint
  */
-export type ClimitizationResponse = {
+export type Climitization = {
   vin: string;
   invokeStatus:
     | "RUNNING"
@@ -455,7 +455,7 @@ export type ClimitizationResponse = {
 /**
  * Response from /commands/lock endpoint
  */
-export type LockCommandResponse = {
+export type LockCommand = {
   vin: string;
   invokeStatus:
     | "COMPLETED"
@@ -473,7 +473,7 @@ export type LockCommandResponse = {
 /**
  * Response from /commands/unlock endpoint
  */
-export type UnlockCommandResponse = {
+export type UnlockCommand = {
   vin: string;
   statusCode: number;
   invokeStatus:
@@ -503,7 +503,7 @@ export type EngineStartRequestBody = {
 /**
  * Response from /commands/engine-start endpoint
  */
-export type EngineStartResponse = {
+export type EngineStart = {
   vin: string;
   statusCode: number;
   invokeStatus:
@@ -525,7 +525,7 @@ export type EngineStartResponse = {
 /**
  * Response from /commands/engine-stop endpoint
  */
-export type EngineStopResponse = {
+export type EngineStop = {
   vin: string;
   statusCode: number;
   invokeStatus:
@@ -550,7 +550,7 @@ export type EngineStopResponse = {
 /**
  * Response from /commands/flash
  */
-export type FlashResponse = {
+export type Flash = {
   vin: string;
   statusCode: number;
   invokeStatus:
@@ -570,7 +570,7 @@ export type FlashResponse = {
 /**
  * Response from /commands/honk endpoint
  */
-export type HonkResponse = {
+export type Honk = {
   vin: string;
   statusCode: number;
   invokeStatus:
@@ -590,7 +590,7 @@ export type HonkResponse = {
 /**
  * Response from /commands/honk-flash endpoint
  */
-export type HonkAndFlashResponse = {
+export type HonkAndFlash = {
   vin: string;
   statusCode: number;
   invokeStatus:

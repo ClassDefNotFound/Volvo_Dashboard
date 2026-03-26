@@ -3,22 +3,20 @@ import { config } from "config.js";
 import axios from "axios";
 import type { Request } from "express-serve-static-core";
 import type {
-  VehiclesResponse,
-  VehicleDetailsResponse,
+  Vehicles,
+  VehicleDetails,
   WindowStatusResponse,
 } from "../../shared/types/index.js";
 
 const router = Router();
 
 function getAccessToken(req: Request): string {
-  return config.isLocalMode
-    ? config.accessToken!
-    : req.session.accessToken!;
+  return config.isLocalMode ? config.accessToken! : req.session.accessToken!;
 }
 
 router.get("/vehicles", async (req, res) => {
   try {
-    const vehicles = await axios.get<VehiclesResponse>(
+    const vehicles = await axios.get<Vehicles>(
       `${config.volvoApiUrl}/vehicles`,
       {
         headers: {
@@ -38,7 +36,7 @@ router.get("/vehicles", async (req, res) => {
 router.get("/vehicles/:vin", async (req, res) => {
   try {
     const { vin } = req.params;
-    const vehicleDetails = await axios.get<VehicleDetailsResponse>(
+    const vehicleDetails = await axios.get<VehicleDetails>(
       `${config.volvoApiUrl}/vehicles/${vin}`,
       {
         headers: {
