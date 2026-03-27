@@ -434,7 +434,7 @@ export type Warnings = {
 /**
  * Response from commands/climitization_start/_stop endpoint
  */
-export type Climitization = {
+export type Climatization = {
   vin: string;
   invokeStatus:
     | "RUNNING"

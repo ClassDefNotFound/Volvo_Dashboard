@@ -31,26 +31,6 @@ const DashboardPage = () => {
 
   const { isMobile } = useBreakpoint();
 
-  /* function renderTitle() {
-    const text = isMobile ? "Volvo" : "Volvo Dashboard";
-    return (
-      <Typography
-        variant="h5"
-        noWrap={true}
-        textAlign="left"
-        fontSize="1.5rem"
-        fontWeight={100}
-        sx={{
-          [theme.breakpoints.down("sm")]: {
-            fontSize: "1.3rem",
-          },
-        }}
-      >
-        {text}
-      </Typography>
-    );
-  } */
-
   function renderTitle() {
     return (
       <Box
@@ -106,7 +86,10 @@ const DashboardPage = () => {
           <Box
             sx={{
               display: "flex",
-              width: "50%",
+              width: {
+                xs: "60%",
+                sm: "50%",
+              },
               justifyContent: {
                 xs: "flex-end",
                 sm: "space-between",

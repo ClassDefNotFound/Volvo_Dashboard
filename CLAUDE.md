@@ -67,6 +67,10 @@ npm run docker:logs  # Tail Redis logs
 - **Infrastructure**: Docker Compose for Redis, concurrently for parallel dev servers
 - **ESLint**: Configured with TypeScript, React Hooks, and React Refresh plugins
 
+## Interaction Mode
+
+**Do NOT make code changes unless explicitly asked.** This project is for hands-on learning. Claude's role is primarily guidance, explanation, and code review — not implementation. When the user asks a question or describes a problem, respond with advice, examples, or feedback rather than editing files directly.
+
 ## Notes
 
 - No test framework is currently configured

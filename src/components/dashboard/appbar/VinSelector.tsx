@@ -17,10 +17,11 @@ const VinSelector = ({
         onChange={onSelectedVinChange}
         size="small"
         sx={{
-          minWidth: 200,
-          [theme.breakpoints.between("xs", "lg")]: {
-            minWidth: 150,
+          minWidth: 150,
+          [theme.breakpoints.between("sm", "md")]: {
+            minWidth: 200,
           },
+          color: theme.palette.primary.dark,
           border: `1px solid ${theme.palette.secondary.dark}`,
           "& .MuiSvgIcon-root": {
             color: theme.palette.secondary.dark,
