@@ -4,7 +4,7 @@ import {
   Box,
   Button,
   IconButton,
-  //   Typography,
+  Stack,
   useTheme,
 } from "@mui/material";
 
@@ -13,6 +13,8 @@ import VinSelector from "./appbar/VinSelector";
 
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useBreakpoint } from "@components/hooks/useBreakpoint";
+import WebDash from "./WebDash";
+import MobileDash from "./MobileDash";
 
 const DashboardPage = () => {
   const [vins, setVins] = useState<string[]>([]);
@@ -63,11 +65,12 @@ const DashboardPage = () => {
   }
 
   return (
-    <>
+    <Stack spacing={1} width="100dvw">
       <AppBar
         position="static"
         sx={{
           maxHeight: "max-content",
+          width: "auto",
           padding: 1,
           backgroundColor: theme.palette.secondary.main,
           color: theme.palette.secondary.contrastText,
@@ -106,7 +109,8 @@ const DashboardPage = () => {
           </Box>
         </Box>
       </AppBar>
-    </>
+      {isMobile ? <MobileDash /> : <WebDash />}
+    </Stack>
   );
 };
 
