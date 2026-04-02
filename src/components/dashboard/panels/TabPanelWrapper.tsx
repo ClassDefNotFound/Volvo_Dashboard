@@ -3,7 +3,17 @@ import type { TabPanelProps } from "./PanelProps";
 
 const TabPanelWrapper = ({ children }: TabPanelProps) => {
   return (
-    <Box role="tabpanel" sx={{ height: "50dvh", border: "1px solid red" }}>
+    <Box
+      id="tab-panel-wrapper"
+      role="tabpanel"
+      aria-labelledby="status-panel-tabs"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        border: "1px solid red",
+      }}
+    >
       {children}
     </Box>
   );

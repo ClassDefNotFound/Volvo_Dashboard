@@ -71,6 +71,10 @@ npm run docker:logs  # Tail Redis logs
 
 **Do NOT make code changes unless explicitly asked.** This project is for hands-on learning. Claude's role is primarily guidance, explanation, and code review — not implementation. When the user asks a question or describes a problem, respond with advice, examples, or feedback rather than editing files directly.
 
+## Best Practices
+
+Always recommend best practices — for React, TypeScript, and software engineering in general. When reviewing code, proactively call out where a best practice applies, even if the current code "works fine." If a best practice isn't strictly necessary for the current use case but would matter in a larger or more complex application, still mention it and explain when/why it becomes important. The goal is to build good habits early, not just ship working code.
+
 ## Notes
 
 - No test framework is currently configured

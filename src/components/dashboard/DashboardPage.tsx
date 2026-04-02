@@ -12,24 +12,27 @@ import { getVehicles } from "@api/volvo_api";
 import VinSelector from "./appbar/VinSelector";
 
 import SettingsIcon from "@mui/icons-material/Settings";
-import { useBreakpoint } from "@components/hooks/useBreakpoint";
 import WebDash from "./WebDash";
 import MobileDash from "./MobileDash";
 
+import { useBreakpoint } from "@hooks/useBreakpoint";
+import { useVin } from "@hooks/useVin";
+
 const DashboardPage = () => {
-  const [vins, setVins] = useState<string[]>([]);
-  const [selectedVin, setSelectedVin] = useState<string>("");
+  const [availableVins, setAvailableVins] = useState<string[]>([]);
+
+  const { setVin } = useVin();
 
   const theme = useTheme();
 
   useEffect(() => {
     async function fetchVehicles() {
       const vehicles = await getVehicles();
-      setVins(vehicles.data.data.map((v) => v.vin));
-      setSelectedVin(vehicles.data.data[0].vin);
+      setAvailableVins(vehicles.data.data.map((v) => v.vin));
+      setVin(vehicles.data.data[0].vin);
     }
     fetchVehicles();
-  }, []);
+  }, [setVin]);
 
   const { isMobile } = useBreakpoint();
 
@@ -65,7 +68,7 @@ const DashboardPage = () => {
   }
 
   return (
-    <Stack spacing={1} width="100dvw">
+    <Stack spacing={1} width="100%" overflow="auto">
       <AppBar
         position="static"
         sx={{
@@ -100,11 +103,7 @@ const DashboardPage = () => {
               gap: 1,
             }}
           >
-            <VinSelector
-              vins={vins}
-              selectedVin={selectedVin}
-              onSelectedVinChange={(e) => setSelectedVin(e.target.value)}
-            />
+            <VinSelector vins={availableVins} />
             {renderLogoutOrSettings()}
           </Box>
         </Box>

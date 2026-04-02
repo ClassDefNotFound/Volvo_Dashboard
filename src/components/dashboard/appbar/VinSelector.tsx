@@ -1,20 +1,27 @@
-import { MenuItem, Select, useTheme } from "@mui/material";
-import type { VinSelectorProps } from ".";
+import {
+  MenuItem,
+  Select,
+  useTheme,
+  type SelectChangeEvent,
+} from "@mui/material";
+import { useVin } from "@hooks/useVin";
 
-const VinSelector = ({
-  vins,
-  selectedVin,
-  onSelectedVinChange,
-}: VinSelectorProps) => {
+type VinSelectorProps = {
+  vins: string[];
+};
+
+const VinSelector = ({ vins }: VinSelectorProps) => {
   const theme = useTheme();
+  const { vin, setVin } = useVin();
+
   return (
     <>
       <Select
         labelId="vin-selector-label"
         label="Vin"
         id="vin-selector"
-        value={selectedVin}
-        onChange={onSelectedVinChange}
+        value={vin}
+        onChange={(e: SelectChangeEvent) => setVin(e.target.value)}
         size="small"
         sx={{
           minWidth: 150,
@@ -29,7 +36,9 @@ const VinSelector = ({
         }}
       >
         {vins.map((v) => (
-          <MenuItem value={v}>{v}</MenuItem>
+          <MenuItem key={v} value={v}>
+            {v}
+          </MenuItem>
         ))}
       </Select>
     </>

@@ -7,6 +7,7 @@ import DashboardPage from "./components/dashboard/DashboardPage";
 
 import "./App.css";
 import volvo_theme from "./themes/volvo_theme";
+import { VinProvider } from "@contexts/VinProvider";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -26,7 +27,9 @@ function App() {
   return (
     <ThemeProvider theme={volvo_theme}>
       <CssBaseline />
-      {isAuthenticated ? <DashboardPage /> : <LoginPage />}
+      <VinProvider>
+        {isAuthenticated ? <DashboardPage /> : <LoginPage />}
+      </VinProvider>
     </ThemeProvider>
   );
 }

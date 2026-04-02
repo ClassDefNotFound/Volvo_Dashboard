@@ -11,6 +11,7 @@ import StatisticsPanel from "./panels/StatisticsPanel";
 import TyresPanel from "./panels/TyresPanel";
 import WarningsPanel from "./panels/WarningsPanel";
 import EngineStatusPanel from "./panels/EngineStatusPanel";
+import TabPanelWrapper from "./panels/TabPanelWrapper";
 
 const statusPanels = [
   { label: "Engine Diag.", panel: EngineDiagnosticsPanel },
@@ -26,8 +27,8 @@ const statusPanels = [
   { label: "Warnings", panel: WarningsPanel },
 ];
 
-const StatusBar = () => {
-  const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
+const StatusPanel = () => {
+  const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
 
   function renderTabs() {
     return statusPanels.map(({ label }) => (
@@ -36,17 +37,35 @@ const StatusBar = () => {
   }
 
   function renderTabContent() {
-    const ActivePanel = statusPanels[selectedTabIndex].panel;
-    return <ActivePanel />;
+    const ActivePanel = statusPanels[activeTabIndex].panel;
+    return (
+      <TabPanelWrapper>
+        <ActivePanel />
+      </TabPanelWrapper>
+    );
   }
 
   return (
-    <Box id="StatusBar" sx={{ border: "1px dashed white" }}>
+    <Box
+      id="status-panel"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        minWidth: 50,
+        border: "1px dashed white",
+        my: {
+          xs: 5,
+          md: 10,
+        },
+      }}
+    >
       <Tabs
-        value={selectedTabIndex}
-        onChange={(_, value) => setSelectedTabIndex(value)}
+        value={activeTabIndex}
+        onChange={(_, value) => setActiveTabIndex(value)}
         variant="scrollable"
         scrollButtons="auto"
+        sx={{ minWidth: 0 }}
       >
         {renderTabs()}
       </Tabs>
@@ -55,4 +74,4 @@ const StatusBar = () => {
   );
 };
 
-export default StatusBar;
+export default StatusPanel;
