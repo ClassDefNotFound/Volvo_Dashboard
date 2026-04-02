@@ -1,7 +1,7 @@
 import { Box, Drawer, IconButton } from "@mui/material";
-import VehicleInfoPanel from "./panels/VehicleInfoPanel";
-import CommandPanel from "./panels/commands/CommandPanel";
-import StatusPanel from "./StatusPanel";
+import VehicleInfoPanel from "@components/dashboard/panels/VehicleInfoPanel";
+import CommandPanel from "@components/dashboard/panels/commands/CommandPanel";
+import VehicleDataPanel from "@components/dashboard/panels/VehicleDataPanel";
 import { useRef, useState } from "react";
 
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
@@ -40,7 +40,6 @@ const WebDash = () => {
           variant="persistent"
           open={open}
           onClose={() => setOpen(false)}
-          keepMounted
           sx={{
             maxWidth: 300,
             flex: 1,
@@ -89,7 +88,7 @@ const WebDash = () => {
         }}
         border="1px dashed white"
       >
-        <StatusPanel />
+        <VehicleDataPanel />
       </Box>
     </Box>
   );

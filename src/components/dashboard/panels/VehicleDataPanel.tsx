@@ -1,17 +1,17 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
-import OdometerPanel from "./panels/OdometerPanel";
-import EngineDiagnosticsPanel from "./panels/EngineDiagnosticsPanel";
-import VehicleDiagnosticsPanel from "./panels/VehicleDiagnosticsPanel";
-import BrakesPanel from "./panels/BrakesPanel";
-import WindowsPanel from "./panels/WindowsPanel";
-import DoorsPanel from "./panels/DoorsPanel";
-import FuelPanel from "./panels/FuelPanel";
-import StatisticsPanel from "./panels/StatisticsPanel";
-import TyresPanel from "./panels/TyresPanel";
-import WarningsPanel from "./panels/WarningsPanel";
-import EngineStatusPanel from "./panels/EngineStatusPanel";
-import TabPanelWrapper from "./panels/TabPanelWrapper";
+import OdometerPanel from "@components/dashboard/panels/OdometerPanel";
+import EngineDiagnosticsPanel from "@components/dashboard/panels/EngineDiagnosticsPanel";
+import VehicleDiagnosticsPanel from "@components/dashboard/panels/VehicleDiagnosticsPanel";
+import BrakesPanel from "@components/dashboard/panels/BrakesPanel";
+import WindowsPanel from "@components/dashboard/panels/WindowsPanel";
+import DoorsPanel from "@components/dashboard/panels/DoorsPanel";
+import FuelPanel from "@components/dashboard/panels/FuelPanel";
+import StatisticsPanel from "@components/dashboard/panels/StatisticsPanel";
+import TyresPanel from "@components/dashboard/panels/TyresPanel";
+import WarningsPanel from "@components/dashboard/panels/WarningsPanel";
+import EngineStatusPanel from "@components/dashboard/panels/EngineStatusPanel";
+import TabPanelWrapper from "@components/dashboard/panels/TabPanelWrapper";
 
 const statusPanels = [
   { label: "Engine Diag.", panel: EngineDiagnosticsPanel },
@@ -27,7 +27,7 @@ const statusPanels = [
   { label: "Warnings", panel: WarningsPanel },
 ];
 
-const StatusPanel = () => {
+const VehicleDataPanel = () => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
 
   function renderTabs() {
@@ -47,7 +47,7 @@ const StatusPanel = () => {
 
   return (
     <Box
-      id="status-panel"
+      id="vehicle-data-panel"
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -74,4 +74,4 @@ const StatusPanel = () => {
   );
 };
 
-export default StatusPanel;
+export default VehicleDataPanel;

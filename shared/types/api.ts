@@ -42,26 +42,28 @@ export type Vehicles = {
  * Response from /vin endpoint
  */
 export type VehicleDetails = {
-  vin: string;
-  modelYear: number;
-  gearBox: "AUTOMATIC" | "MANUAL";
-  fuelType:
-    | "DIESEL"
-    | "PETROL"
-    | "PETROL/ELECTRIC"
-    | "DIESEL/ELECTRIC"
-    | "ELECTRIC"
-    | "NONE";
-  externalColour: string;
-  batteryCapacityKWH: number;
-  images: {
-    exteriorImageUrl: string;
-    interiorImageUrl: string;
-  };
-  descriptions: {
-    model: string;
-    steering: string;
-    upholstery?: string;
+  data: {
+    vin: string;
+    modelYear: number;
+    gearbox: "AUTOMATIC" | "MANUAL";
+    fuelType:
+      | "DIESEL"
+      | "PETROL"
+      | "PETROL/ELECTRIC"
+      | "DIESEL/ELECTRIC"
+      | "ELECTRIC"
+      | "NONE";
+    externalColour: string;
+    batteryCapacityKWH: number;
+    images: {
+      exteriorImageUrl: string;
+      interiorImageUrl: string;
+    };
+    descriptions: {
+      model: string;
+      steering: string;
+      upholstery?: string;
+    };
   };
 };
 
@@ -69,63 +71,67 @@ export type VehicleDetails = {
  * Response from /engine endpoint
  */
 export type EngineDiagnostics = {
-  engineCoolantLevelWarning: {
-    timestamp: string; // ISO-8601 format
-    value: "UNSPECIFIED" | "NO_WARNING" | "TOO_LOW";
+  data: {
+    engineCoolantLevelWarning: {
+      timestamp: string; // ISO-8601 format
+      value: "UNSPECIFIED" | "NO_WARNING" | "TOO_LOW";
+    };
+    oilLevelWarning: {
+      timestamp: string;
+      value:
+        | "UNSPECIFIED"
+        | "NO_WARNING"
+        | "SERVICE_REQUIRED"
+        | "TOO_LOW"
+        | "TOO_HIGH";
+    };
+    // [key: string]: unknown; // Allow for additional fields
   };
-  oilLevelWarning: {
-    timestamp: string;
-    value:
-      | "UNSPECIFIED"
-      | "NO_WARNING"
-      | "SERVICE_REQUIRED"
-      | "TOO_LOW"
-      | "TOO_HIGH";
-  };
-  [key: string]: unknown; // Allow for additional fields
 };
 
 /**
  * Response from /diagnostics endpoint
  */
 export type Diagnostics = {
-  serviceWarning: {
-    timestamp: string;
-    value:
-      | "UNSPECIFIED"
-      | "NO_WARNING"
-      | "UNKNOWN_WARNING"
-      | "REGULAR_MAINTENANCE_ALMOST_TIME_FOR_SERVICE"
-      | "ENGINE_HOURS_ALMOST_TIME_FOR_SERVICE"
-      | "DISTANCE_DRIVEN_ALMOST_TIME_FOR_SERVICE"
-      | "REGULAR_MAINTENANCE_TIME_FOR_SERVICE"
-      | "ENGINE_HOURS_TIME_FOR_SERVIC"
-      | "DISTANCE_DRIVEN_TIME_FOR_SERVICE"
-      | "REGULAR_MAINTENANCE_OVERDUE_FOR_SERVICE"
-      | "ENGINE_HOURS_OVERDUE_FOR_SERVICE"
-      | "DISTANCE_DRIVEN_OVERDUE_FOR_SERVICE";
-  };
-  serviceTrigger: {
-    timestamp: string;
-    value:
-      | "CALENDAR_TIME"
-      | "DISTANCE"
-      | "ENGINE_HOURS"
-      | "UNSPECIFIED"
-      | "UNKNOWN";
-  };
-  engineHoursToService: {
-    timestamp: string;
-    value: number; // Hours until next service
-  };
-  distanceToServiceKm: {
-    timestamp: string;
-    value: number;
-  };
-  timeToService: {
-    timestamp: string;
-    value: number; // Remaining time in days or month -- see unit -- till next scheduled maintenance
-    unit: "days" | "months";
+  data: {
+    serviceWarning: {
+      timestamp: string;
+      value:
+        | "UNSPECIFIED"
+        | "NO_WARNING"
+        | "UNKNOWN_WARNING"
+        | "REGULAR_MAINTENANCE_ALMOST_TIME_FOR_SERVICE"
+        | "ENGINE_HOURS_ALMOST_TIME_FOR_SERVICE"
+        | "DISTANCE_DRIVEN_ALMOST_TIME_FOR_SERVICE"
+        | "REGULAR_MAINTENANCE_TIME_FOR_SERVICE"
+        | "ENGINE_HOURS_TIME_FOR_SERVIC"
+        | "DISTANCE_DRIVEN_TIME_FOR_SERVICE"
+        | "REGULAR_MAINTENANCE_OVERDUE_FOR_SERVICE"
+        | "ENGINE_HOURS_OVERDUE_FOR_SERVICE"
+        | "DISTANCE_DRIVEN_OVERDUE_FOR_SERVICE";
+    };
+    serviceTrigger: {
+      timestamp: string;
+      value:
+        | "CALENDAR_TIME"
+        | "DISTANCE"
+        | "ENGINE_HOURS"
+        | "UNSPECIFIED"
+        | "UNKNOWN";
+    };
+    engineHoursToService: {
+      timestamp: string;
+      value: number; // Hours until next service
+    };
+    distanceToServiceKm: {
+      timestamp: string;
+      value: number;
+    };
+    timeToService: {
+      timestamp: string;
+      value: number; // Remaining time in days or month -- see unit -- till next scheduled maintenance
+      unit: "days" | "months";
+    };
   };
 };
 
@@ -133,9 +139,11 @@ export type Diagnostics = {
  * Response from /brakes endpoint
  */
 export type BrakeStatus = {
-  brakeFluidLevelWarning: {
-    timestamp: string;
-    value: "UNSPECIFIED" | "NO_WARNING" | "TOO_LOW";
+  data: {
+    brakeFluidLevelWarning: {
+      timestamp: string;
+      value: "UNSPECIFIED" | "NO_WARNING" | "TOO_LOW";
+    };
   };
 };
 
@@ -145,25 +153,27 @@ type WindowAndLockStatusValues = "UNSPECIFIED" | "LOCKED" | "UNLOCKED" | "AJAR";
  * Response from /windows endpoint
  */
 export type WindowStatus = {
-  frontLeftWindow: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  frontRightWindow: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  rearLeftWindow: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  rearRightWindow: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  sunroof: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
+  data: {
+    frontLeftWindow: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    frontRightWindow: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    rearLeftWindow: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    rearRightWindow: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    sunroof: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
   };
 };
 
@@ -171,37 +181,39 @@ export type WindowStatus = {
  * Response from /doors endpoint
  */
 export type DoorAndLockStatus = {
-  centralLock: {
-    timestamp: string;
-    value: "UNSPECIFIED" | "LOCKED" | "UNLOCKED";
-  };
-  frontLeftDoor: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  frontRightDoor: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  rearLeftDoor: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  rearRightDoor: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  tailGate: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  hood: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
-  };
-  tankLid: {
-    timestamp: string;
-    value: WindowAndLockStatusValues;
+  data: {
+    centralLock: {
+      timestamp: string;
+      value: "UNSPECIFIED" | "LOCKED" | "UNLOCKED";
+    };
+    frontLeftDoor: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    frontRightDoor: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    rearLeftDoor: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    rearRightDoor: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    tailGate: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    hood: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
+    tankLid: {
+      timestamp: string;
+      value: WindowAndLockStatusValues;
+    };
   };
 };
 
@@ -209,92 +221,105 @@ export type DoorAndLockStatus = {
  * Response from /fuel endpoint
  */
 export type FuelStatus = {
-  fuelAmount: {
-    timestamp: string;
-    value: number;
-    unit: "l";
-  };
-  batteryChargeLevel: {
-    timestamp: string;
-    value: number;
-    unit: "%";
+  data: {
+    fuelAmount: {
+      timestamp: string;
+      value: number;
+      unit: "l";
+    };
+    batteryChargeLevel: {
+      timestamp: string;
+      value: number;
+      unit: "%";
+    };
   };
 };
+
 /**
  * Response from /engine_status endpoint
  */
 export type EngineStatus = {
-  timestamp: string;
-  engineStatus: "STOPPED" | "RUNNING";
+  data: {
+    engineStatus: {
+      timestamp: string;
+      value: "STOPPED" | "RUNNING";
+    };
+  };
 };
 
 /**
  * Response from /odometer endpoint
  */
 export type OdometerStatus = {
-  timestamp: string;
-  value: number; // Odometer reading in kilometers
-  unit: "km";
+  data: {
+    odometer: {
+      timestamp: string;
+      value: number; // Odometer reading in kilometers
+      unit: "km";
+    };
+  };
 };
 
 /**
  * Response from /statistics endpoint
  */
 export type Statistics = {
-  averageFuelConsumption: {
-    timestamp: string;
-    value: number;
-    unit: "l/100km";
-  };
-  averageEnergyConsumption: {
-    timestamp: string;
-    value: number;
-    unit: "kWh/100km";
-  };
-  averageFuelConsumptionAutomatic: {
-    timestamp: string;
-    value: number;
-    unit: "l/100km";
-  };
-  averageEnergyConsumptionAutomatic: {
-    timestamp: string;
-    value: number;
-    unit: "kWh/100km";
-  };
-  averageEnergyConsumptionSinceCharge: {
-    timestamp: string;
-    value: number;
-    unit: "kWh/100km";
-  };
-  distanceToEmptyTank: {
-    timestamp: string;
-    value: number;
-    unit: "km";
-  };
-  distanceToEmptyBattery: {
-    timestamp: string;
-    value: number;
-    unit: "km";
-  };
-  averageSpeed: {
-    timestamp: string;
-    value: number;
-    unit: "km/h";
-  };
-  averageSpeedAutomatic: {
-    timestamp: string;
-    value: number;
-    unit: "km/h";
-  };
-  tripMeterManual: {
-    timestamp: string;
-    value: number;
-    unit: "km";
-  };
-  trimMeterAutomatic: {
-    timestamp: string;
-    value: number;
-    unit: "km";
+  data: {
+    averageFuelConsumption: {
+      timestamp: string;
+      value: number;
+      unit: "l/100km";
+    };
+    averageEnergyConsumption: {
+      timestamp: string;
+      value: number;
+      unit: "kWh/100km";
+    };
+    averageFuelConsumptionAutomatic: {
+      timestamp: string;
+      value: number;
+      unit: "l/100km";
+    };
+    averageEnergyConsumptionAutomatic: {
+      timestamp: string;
+      value: number;
+      unit: "kWh/100km";
+    };
+    averageEnergyConsumptionSinceCharge: {
+      timestamp: string;
+      value: number;
+      unit: "kWh/100km";
+    };
+    distanceToEmptyTank: {
+      timestamp: string;
+      value: number;
+      unit: "km";
+    };
+    distanceToEmptyBattery: {
+      timestamp: string;
+      value: number;
+      unit: "km";
+    };
+    averageSpeed: {
+      timestamp: string;
+      value: number;
+      unit: "km/h";
+    };
+    averageSpeedAutomatic: {
+      timestamp: string;
+      value: number;
+      unit: "km/h";
+    };
+    tripMeterManual: {
+      timestamp: string;
+      value: number;
+      unit: "km";
+    };
+    trimMeterAutomatic: {
+      timestamp: string;
+      value: number;
+      unit: "km";
+    };
   };
 };
 
@@ -309,21 +334,23 @@ type TyreValues =
  * Response from /tyres endpoint
  */
 export type TyresStatus = {
-  frontLeft: {
-    timestamp: string;
-    value: TyreValues;
-  };
-  frontRight: {
-    timestamp: string;
-    value: TyreValues;
-  };
-  rearLeft: {
-    timestamp: string;
-    value: TyreValues;
-  };
-  rearRight: {
-    timestamp: string;
-    value: TyreValues;
+  data: {
+    frontLeft: {
+      timestamp: string;
+      value: TyreValues;
+    };
+    frontRight: {
+      timestamp: string;
+      value: TyreValues;
+    };
+    rearLeft: {
+      timestamp: string;
+      value: TyreValues;
+    };
+    rearRight: {
+      timestamp: string;
+      value: TyreValues;
+    };
   };
 };
 
@@ -333,97 +360,99 @@ export type WarningValues = "UNSPECIFIED" | "NO_WARNING" | "FAILURE";
  * Response for /warnings endpoint
  */
 export type Warnings = {
-  brakeLightLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  brakeLightCenterWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  brakeLightRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  fogLightFrontWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  fogLightRearWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  positionLightFrontLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  positionLightFrontRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  positionLightRearLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  positionLightRearRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  highBeamLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  highBeamRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  lowBeamLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  lowBeamRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  daytimeRuningLightLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  daytimeRuningLightRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  turnIndicationFrontLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  turnIndicationFrontRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  turnIndicationRearLeftWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  turnIndicationRearRightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  registrationPlateLightWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  sideMarkLightsWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  hazardLightsWarning: {
-    timestamp: string;
-    value: WarningValues;
-  };
-  reverseLightsWarning: {
-    timestamp: string;
-    value: WarningValues;
+  data: {
+    brakeLightLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    brakeLightCenterWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    brakeLightRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    fogLightFrontWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    fogLightRearWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    positionLightFrontLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    positionLightFrontRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    positionLightRearLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    positionLightRearRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    highBeamLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    highBeamRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    lowBeamLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    lowBeamRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    daytimeRuningLightLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    daytimeRuningLightRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    turnIndicationFrontLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    turnIndicationFrontRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    turnIndicationRearLeftWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    turnIndicationRearRightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    registrationPlateLightWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    sideMarkLightsWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    hazardLightsWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
+    reverseLightsWarning: {
+      timestamp: string;
+      value: WarningValues;
+    };
   };
 };
 

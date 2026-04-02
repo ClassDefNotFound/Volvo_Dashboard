@@ -43,7 +43,7 @@ let volvo_theme = createTheme({
     success: {
       main: "#6B8F71",
     },
-    divider: volvoColors.vapourGrey,
+    divider: volvoColors.crystalWhite,
   },
   typography: {
     fontFamily: '"Jost", "Roboto", "Helvetica", "Arial", sans-serif',

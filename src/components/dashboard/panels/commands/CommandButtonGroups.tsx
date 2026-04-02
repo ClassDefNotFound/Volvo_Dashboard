@@ -28,6 +28,7 @@ const CommandButtonGroups = ({
       <Button
         key={action}
         value={action.toLowerCase()}
+        size="small"
         sx={{ backgroundColor: theme.palette.primary.dark }}
       >
         <Typography variant="button">{action.toUpperCase()}</Typography>
@@ -37,7 +38,9 @@ const CommandButtonGroups = ({
 
   return (
     <Box id={id}>
-      <Typography variant="h6">{groupLabel.toUpperCase()}</Typography>
+      <Typography variant="h6" sx={{ fontSize: { xs: ".75rem", md: "1rem" } }}>
+        {groupLabel.toUpperCase()}
+      </Typography>
       <ButtonGroup color="primary" sx={{ gap: 1, ...groupStyling }}>
         {getButtons()}
       </ButtonGroup>

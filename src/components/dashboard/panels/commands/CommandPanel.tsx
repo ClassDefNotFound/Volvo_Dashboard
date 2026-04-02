@@ -1,5 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import CommandButtonGroups from "./CommandButtonGroups";
+import SectionTitle from "@components/dashboard/SectionTitle";
 
 const commandGroups = [
   {
@@ -35,10 +36,11 @@ const CommandPanel = () => {
         display: "flex",
         flexDirection: "column",
         gap: 3,
-        margin: 2,
+        mx: 2,
+        my: 1,
       }}
     >
-      <Typography variant="h5">Commands</Typography>
+      <SectionTitle title="Commands" />
       {commandGroups.map((cg) => (
         <CommandButtonGroups {...cg} key={cg.id} />
       ))}

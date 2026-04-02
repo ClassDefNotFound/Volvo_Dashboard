@@ -69,7 +69,6 @@ export async function getWindowStatus(vin: string) {
 export async function getDoorStatus(vin: string) {
   return await axios.get<DoorAndLockStatus>(getStatusEndpoint(vin, "doors"));
 }
-
 export async function getEngineStatus(vin: string) {
   return await axios.get<EngineStatus>(getStatusEndpoint(vin, "engine-status"));
 }

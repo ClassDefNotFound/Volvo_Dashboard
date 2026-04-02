@@ -1,13 +1,19 @@
-import { Box, Typography } from "@mui/material";
+import { getVehicleDiagnostics } from "@api/volvo_api";
+import useVehicleData from "@hooks/useVehicleData";
+import { useVin } from "@hooks/useVin";
+import VehicleDataTable from "./VehicleDataTable";
 
 const VehicleDiagnosticsPanel = () => {
+  const { vin } = useVin();
+  const { data, loading, error } = useVehicleData(vin, getVehicleDiagnostics);
+
   return (
-    <>
-      <Typography variant="body1">Vehicle Diag.</Typography>
-      <Box sx={{ height: "auto", border: "1px solid yellow" }}>
-        <Typography variant="body2">Panel content</Typography>
-      </Box>
-    </>
+    <VehicleDataTable
+      tableName={"Vehicle Diagnostics"}
+      data={data?.data}
+      loading={loading}
+      error={error}
+    />
   );
 };
 

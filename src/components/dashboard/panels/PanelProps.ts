@@ -1,3 +1,5 @@
-export type TabPanelProps = {
-  children: React.ReactNode;
+export type StatusEntry = {
+  timestamp: string;
+  value: unknown;
+  unit?: string;
 };

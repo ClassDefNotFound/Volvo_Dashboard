@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material";
-import VehicleInfoPanel from "./panels/VehicleInfoPanel";
-import StatusPanel from "./StatusPanel";
-import MobileCommandBar from "./panels/commands/MobileCommandBar";
+import VehicleInfoPanel from "@components/dashboard//panels/VehicleInfoPanel";
+import VehicleDataPanel from "@components/dashboard/panels/VehicleDataPanel";
+import MobileCommandBar from "@components/dashboard//panels/commands/MobileCommandBar";
 
 const MobileDash = () => {
   return (
@@ -11,7 +11,7 @@ const MobileDash = () => {
       sx={{ flex: 1, justifyContent: "space-between" }}
     >
       <VehicleInfoPanel />
-      <StatusPanel />
+      <VehicleDataPanel />
       <MobileCommandBar />
     </Stack>
   );
