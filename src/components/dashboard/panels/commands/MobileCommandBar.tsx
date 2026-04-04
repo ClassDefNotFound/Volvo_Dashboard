@@ -1,4 +1,4 @@
-import { IconButton, Paper } from "@mui/material";
+import { IconButton, Paper, useTheme } from "@mui/material";
 
 import LockOutlineRoundedIcon from "@mui/icons-material/LockOutlineRounded";
 import LockOpenRoundedIcon from "@mui/icons-material/LockOpenRounded";
@@ -8,11 +8,16 @@ import FlashlightOnRoundedIcon from "@mui/icons-material/FlashlightOnRounded";
 import SpeakerPhoneRoundedIcon from "@mui/icons-material/SpeakerPhoneRounded";
 
 const MobileCommandBar = () => {
+  const theme = useTheme();
   return (
     <Paper
       id="mobile-command-bar"
       elevation={1}
-      sx={{ display: "flex", justifyContent: "space-evenly" }}
+      sx={{
+        display: "flex",
+        justifyContent: "space-evenly",
+        backgroundColor: theme.palette.background.paper,
+      }}
     >
       <IconButton>
         <LockOutlineRoundedIcon />

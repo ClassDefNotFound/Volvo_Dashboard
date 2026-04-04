@@ -20,7 +20,6 @@ const WebDash = () => {
         overflow: "hidden",
         position: "relative",
       }}
-      border="1px dashed red"
     >
       <Box
         id="web-dash-sidebar"
@@ -81,12 +80,10 @@ const WebDash = () => {
         sx={{
           display: "flex",
           flex: 1,
-          minWidth: 500,
-          overflow: "auto",
+          overflow: "hidden",
           justifyContent: "center",
           margin: 2,
         }}
-        border="1px dashed white"
       >
         <VehicleDataPanel />
       </Box>

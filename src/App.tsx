@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 
-import { getAuthStatus } from "./api/volvo_api";
-import LoginPage from "./components/login/LoginPage";
-import DashboardPage from "./components/dashboard/DashboardPage";
+import { getAuthStatus } from "@api/volvo_api";
+import LoginPage from "@components/login/LoginPage";
+import Dashboard from "@components/dashboard/Dashboard";
 
 import "./App.css";
 import volvo_theme from "./themes/volvo_theme";
@@ -28,7 +28,7 @@ function App() {
     <ThemeProvider theme={volvo_theme}>
       <CssBaseline />
       <VinProvider>
-        {isAuthenticated ? <DashboardPage /> : <LoginPage />}
+        {isAuthenticated ? <Dashboard /> : <LoginPage />}
       </VinProvider>
     </ThemeProvider>
   );

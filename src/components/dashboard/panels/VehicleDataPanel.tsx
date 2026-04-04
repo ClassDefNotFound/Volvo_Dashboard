@@ -14,9 +14,9 @@ import EngineStatusPanel from "@components/dashboard/panels/EngineStatusPanel";
 import TabPanelWrapper from "@components/dashboard/panels/TabPanelWrapper";
 
 const statusPanels = [
-  { label: "Engine Diag.", panel: EngineDiagnosticsPanel },
+  { label: "Engine Diagnostics", panel: EngineDiagnosticsPanel },
   { label: "Engine Status", panel: EngineStatusPanel },
-  { label: "Vehicle Diag.", panel: VehicleDiagnosticsPanel },
+  { label: "Vehicle Diagnostics", panel: VehicleDiagnosticsPanel },
   { label: "Brakes", panel: BrakesPanel },
   { label: "Windows", panel: WindowsPanel },
   { label: "Doors", panel: DoorsPanel },
@@ -52,12 +52,7 @@ const VehicleDataPanel = () => {
         display: "flex",
         flexDirection: "column",
         flex: 1,
-        minWidth: 50,
-        border: "1px dashed white",
-        my: {
-          xs: 5,
-          md: 10,
-        },
+        overflow: "hidden",
       }}
     >
       <Tabs
@@ -65,7 +60,10 @@ const VehicleDataPanel = () => {
         onChange={(_, value) => setActiveTabIndex(value)}
         variant="scrollable"
         scrollButtons="auto"
-        sx={{ minWidth: 0 }}
+        sx={{
+          minWidth: 0,
+          "& .MuiTab-root": { textTransform: "none", fontSize: "1rem" },
+        }}
       >
         {renderTabs()}
       </Tabs>

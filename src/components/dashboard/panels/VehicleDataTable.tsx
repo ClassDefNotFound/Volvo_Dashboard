@@ -1,7 +1,6 @@
 import { Alert, Box, CircularProgress } from "@mui/material";
 import { useCallback } from "react";
 import StatusTable from "./StatusTable";
-import SectionTitle from "../SectionTitle";
 import type { StatusEntry } from "./PanelProps";
 
 type VehicleDataTableProps<T extends Record<string, StatusEntry>> = {
@@ -31,21 +30,14 @@ const VehicleDataTable = <T extends Record<string, StatusEntry>>({
   return (
     <Box
       id={`${tableName.toLowerCase()}-panel`}
-      sx={{ flex: 1, maxHeight: "100%" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        overflow: "hidden",
+      }}
     >
-      <SectionTitle title={tableName} />
-      <Box
-        id="vehicle-data-table-container"
-        sx={{
-          my: 1,
-          height: "auto",
-          border: "1px solid yellow",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        {renderContent()}
-      </Box>
+      {renderContent()}
     </Box>
   );
 };

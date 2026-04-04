@@ -8,7 +8,12 @@ const MobileDash = () => {
     <Stack
       id="mobile-dash-stack"
       spacing={2}
-      sx={{ flex: 1, justifyContent: "space-between" }}
+      sx={{
+        height: "100%",
+        overflow: "hidden",
+        flex: 1,
+        justifyContent: "space-between",
+      }}
     >
       <VehicleInfoPanel />
       <VehicleDataPanel />

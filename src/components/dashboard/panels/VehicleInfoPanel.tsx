@@ -1,13 +1,21 @@
 import { getVehicleDetails } from "@api/volvo_api";
 import useVehicleData from "@hooks/useVehicleData";
 import { useVin } from "@hooks/useVin";
-import { Alert, Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Divider,
+  Typography,
+} from "@mui/material";
 import { useCallback } from "react";
 import SectionTitle from "../SectionTitle";
+import { useBreakpoint } from "@hooks/useBreakpoint";
 
 const VehicleInfoPanel = () => {
   const { vin } = useVin();
   const { data, loading, error } = useVehicleData(vin, getVehicleDetails);
+  const { isMobile } = useBreakpoint();
 
   const renderContent = useCallback(() => {
     if (error) {
@@ -30,25 +38,32 @@ const VehicleInfoPanel = () => {
         ? `${fuelType} ${batteryCapacityKWH}`
         : fuelType;
 
+    if (isMobile)
+      return (
+        <Box>
+          <Typography variant="body1">{`VOLVO ${descriptions.model} ${modelYear}`}</Typography>
+          <Typography variant="body1">{`${externalColour} | ${gearbox} | ${fuelTypeText}`}</Typography>
+          <Divider variant="middle" sx={{ mt: 1 }} />
+        </Box>
+      );
+
     return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, my: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <Typography variant="body1">{`VOLVO ${descriptions.model} ${modelYear}`}</Typography>
         <Typography variant="body1">{`${externalColour} | ${gearbox}`}</Typography>
         <Typography variant="body1">{fuelTypeText}</Typography>
       </Box>
     );
-  }, [data, error, loading]);
+  }, [data, error, loading, isMobile]);
 
   return (
     <Box
       sx={{
         minHeight: { xs: 100, sm: 200 },
         mx: 2,
-        my: 1,
       }}
-      border="1px solid red"
     >
-      <SectionTitle title="Vehicle Info" />
+      {!isMobile && <SectionTitle title="Vehicle Info" />}
       {renderContent()}
     </Box>
   );

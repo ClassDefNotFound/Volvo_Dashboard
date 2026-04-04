@@ -22,7 +22,11 @@ const commandGroups = [
     id: "commands-honk-flash",
     groupLabel: "Honk + Flash",
     actions: ["honk", "flash", "honk + flash"],
-    groupStyling: { display: "flex", flexDirection: "column" },
+    groupStyling: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
   },
 ];
 
@@ -30,17 +34,15 @@ const CommandPanel = () => {
   return (
     <Box
       id="web-dash-command-panel"
-      border="1px solid red"
       sx={{
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        gap: 3,
+        gap: 1,
         mx: 2,
-        my: 1,
       }}
     >
-      <SectionTitle title="Commands" />
+      {<SectionTitle title="Commands" />}
       {commandGroups.map((cg) => (
         <CommandButtonGroups {...cg} key={cg.id} />
       ))}

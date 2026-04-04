@@ -14,7 +14,7 @@ const TabPanelWrapper = ({ children }: TabPanelProps) => {
         display: "flex",
         flexDirection: "column",
         flex: 1,
-        border: "1px solid red",
+        overflow: "hidden",
       }}
     >
       {children}

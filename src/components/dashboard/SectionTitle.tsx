@@ -1,4 +1,4 @@
-import { Divider, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 
 type SectionTitleProps = {
   title: string;
@@ -6,14 +6,19 @@ type SectionTitleProps = {
 const SectionTitle = ({ title }: SectionTitleProps) => {
   const theme = useTheme();
   return (
-    <>
-      <Typography variant="h5">{title}</Typography>
-      <Divider
-        variant="middle"
-        component="div"
-        sx={{ borderColor: theme.palette.divider }}
-      />
-    </>
+    <Box sx={{ my: 2 }}>
+      <Typography
+        variant="h5"
+        sx={{
+          justifySelf: "center",
+          mx: 2,
+          px: 2,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        {title}
+      </Typography>
+    </Box>
   );
 };
 

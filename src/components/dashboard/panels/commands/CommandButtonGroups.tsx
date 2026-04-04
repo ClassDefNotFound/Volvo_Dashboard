@@ -29,7 +29,10 @@ const CommandButtonGroups = ({
         key={action}
         value={action.toLowerCase()}
         size="small"
-        sx={{ backgroundColor: theme.palette.primary.dark }}
+        sx={{
+          backgroundColor: theme.palette.primary.dark,
+          width: "fit-content",
+        }}
       >
         <Typography variant="button">{action.toUpperCase()}</Typography>
       </Button>

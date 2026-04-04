@@ -18,7 +18,7 @@ import MobileDash from "./MobileDash";
 import { useBreakpoint } from "@hooks/useBreakpoint";
 import { useVin } from "@hooks/useVin";
 
-const DashboardPage = () => {
+const Dashboard = () => {
   const [availableVins, setAvailableVins] = useState<string[]>([]);
 
   const { setVin } = useVin();
@@ -68,7 +68,7 @@ const DashboardPage = () => {
   }
 
   return (
-    <Stack spacing={1} width="100%" overflow="auto">
+    <Stack spacing={1} width="100%" height="100dvh" overflow="hidden">
       <AppBar
         position="static"
         sx={{
@@ -113,4 +113,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default Dashboard;
