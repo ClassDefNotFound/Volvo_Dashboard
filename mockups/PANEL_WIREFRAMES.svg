@@ -1,0 +1,149 @@
+<svg width="1000" height="1200" viewBox="0 0 1000 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1000" height="1200" fill="#F2F2F2"/>
+  
+  <!-- PANEL 1: DRIVE (COCKPIT VIEW) -->
+  <g transform="translate(50, 50)">
+    <rect width="425" height="500" rx="24" fill="white"/>
+    <text x="20" y="35" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">DRIVE STATUS</text>
+    
+    <!-- Gauges -->
+    <g transform="translate(100, 150)">
+      <circle cx="0" cy="0" r="60" stroke="#E0E0E0" stroke-width="8" fill="none"/>
+      <path d="M-60,0 A60,60 0 1,1 60,0" stroke="#4F5A78" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Jost" font-size="20" font-weight="600" fill="#2D2926">72%</text>
+      <text x="0" y="85" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Fuel</text>
+    </g>
+    <g transform="translate(325, 150)">
+      <circle cx="0" cy="0" r="60" stroke="#E0E0E0" stroke-width="8" fill="none"/>
+      <path d="M-60,0 A60,60 0 1,1 40,-45" stroke="#C8D4E1" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Jost" font-size="20" font-weight="600" fill="#2D2926">88%</text>
+      <text x="0" y="85" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Battery</text>
+    </g>
+
+    <!-- Stats Grid -->
+    <g transform="translate(20, 300)">
+      <rect width="180" height="80" rx="12" fill="#F2F2F2"/>
+      <text x="15" y="30" font-family="Jost" font-size="12" fill="#7B8082">RANGE (TOTAL)</text>
+      <text x="15" y="60" font-family="Jost" font-size="24" font-weight="500" fill="#2D2926">420 km</text>
+      
+      <rect x="205" y="0" width="180" height="80" rx="12" fill="#F2F2F2"/>
+      <text x="220" y="30" font-family="Jost" font-size="12" fill="#7B8082">ODOMETER</text>
+      <text x="220" y="60" font-family="Jost" font-size="24" font-weight="500" fill="#2D2926">12,450</text>
+    </g>
+    
+    <!-- Engine Status -->
+    <rect x="20" y="400" width="385" height="70" rx="12" fill="#EFE9DD" fill-opacity="0.5"/>
+    <text x="40" y="440" font-family="Jost" font-size="16" fill="#2D2926">Engine Status</text>
+    <rect x="300" y="420" width="80" height="30" rx="15" fill="#6B8F71"/>
+    <text x="340" y="440" text-anchor="middle" font-family="Jost" font-size="12" font-weight="600" fill="white">STOPPED</text>
+  </g>
+
+  <!-- PANEL 2: SECURITY (BLUEPRINT VIEW) -->
+  <g transform="translate(525, 50)">
+    <rect width="425" height="500" rx="24" fill="white"/>
+    <text x="20" y="35" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">SECURITY &amp; LOCKS</text>
+    
+    <!-- Mini Car Blueprint -->
+    <g transform="translate(212, 250) scale(0.6)">
+      <path d="M150,50 C100,50 80,80 70,150 L70,450 C80,520 100,550 150,550 C200,550 220,520 230,450 L230,150 C220,80 200,50 150,50 Z" stroke="#ACAAAE" stroke-width="4" fill="none"/>
+      <!-- Open Door Example -->
+      <path d="M70,180 L40,150" stroke="#CF6679" stroke-width="8" stroke-linecap="round"/>
+      <text x="30" y="140" text-anchor="end" font-family="Jost" font-size="24" fill="#CF6679">AJAR</text>
+    </g>
+
+    <!-- Details List -->
+    <g transform="translate(20, 360)">
+      <text x="0" y="0" font-family="Jost" font-size="14" fill="#2D2926">Central Lock</text>
+      <text x="385" y="0" text-anchor="end" font-family="Jost" font-size="14" font-weight="600" fill="#6B8F71">LOCKED</text>
+      <line x1="0" y1="15" x2="385" y2="15" stroke="#F2F2F2"/>
+      
+      <text x="0" y="40" font-family="Jost" font-size="14" fill="#2D2926">Windows</text>
+      <text x="385" y="40" text-anchor="end" font-family="Jost" font-size="14" font-weight="600" fill="#CF6679">1 AJAR</text>
+      <line x1="0" y1="55" x2="385" y2="55" stroke="#F2F2F2"/>
+
+      <text x="0" y="80" font-family="Jost" font-size="14" fill="#2D2926">Tailgate</text>
+      <text x="385" y="80" text-anchor="end" font-family="Jost" font-size="14" font-weight="600" fill="#6B8F71">SECURE</text>
+    </g>
+  </g>
+
+  <!-- PANEL 3: SAFETY (WARNING WALL) -->
+  <g transform="translate(50, 600)">
+    <rect width="425" height="500" rx="24" fill="white"/>
+    <text x="20" y="35" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">SAFETY &amp; TYRES</text>
+    
+    <!-- Tyres Detail -->
+    <g transform="translate(20, 80)">
+      <text x="0" y="0" font-family="Jost" font-size="14" font-weight="600" fill="#2D2926">Tyre Pressure</text>
+      <g transform="translate(0, 30)">
+        <rect width="80" height="60" rx="8" fill="#F2F2F2" stroke="#6B8F71"/>
+        <text x="40" y="30" text-anchor="middle" font-family="Jost" font-size="10" fill="#7B8082">FL</text>
+        <text x="40" y="50" text-anchor="middle" font-family="Jost" font-size="12" font-weight="600" fill="#2D2926">OK</text>
+        
+        <rect x="90" y="0" width="80" height="60" rx="8" fill="#F2F2F2" stroke="#6B8F71"/>
+        <rect x="180" y="0" width="80" height="60" rx="8" fill="#F2F2F2" stroke="#CF6679"/>
+        <text x="220" y="50" text-anchor="middle" font-family="Jost" font-size="12" font-weight="600" fill="#CF6679">LOW</text>
+        <rect x="270" y="0" width="80" height="60" rx="8" fill="#F2F2F2" stroke="#6B8F71"/>
+      </g>
+    </g>
+
+    <!-- Warnings Grid (Visual placeholders for 23 lights) -->
+    <g transform="translate(20, 200)">
+      <text x="0" y="0" font-family="Jost" font-size="14" font-weight="600" fill="#2D2926">External Lights Status</text>
+      <g transform="translate(0, 20)">
+        <!-- Mocking a grid of indicators -->
+        <rect width="30" height="30" rx="4" fill="#6B8F71"/>
+        <rect x="40" width="30" height="30" rx="4" fill="#6B8F71"/>
+        <rect x="80" width="30" height="30" rx="4" fill="#CF6679"/>
+        <rect x="120" width="30" height="30" rx="4" fill="#6B8F71"/>
+        <rect x="160" width="30" height="30" rx="4" fill="#6B8F71"/>
+        <rect x="200" width="30" height="30" rx="4" fill="#6B8F71"/>
+        <text x="0" y="50" font-family="Jost" font-size="10" fill="#ACAAAE">+ 17 more OK</text>
+      </g>
+    </g>
+    
+    <!-- Brakes -->
+    <g transform="translate(20, 350)">
+      <text x="0" y="0" font-family="Jost" font-size="14" font-weight="600" fill="#2D2926">Brake Fluid Level</text>
+      <rect y="20" width="385" height="40" rx="20" fill="#F2F2F2"/>
+      <rect y="20" width="320" height="40" rx="20" fill="#6B8F71"/>
+      <text x="192" y="45" text-anchor="middle" font-family="Jost" font-size="12" font-weight="600" fill="white">OPTIMAL</text>
+    </g>
+  </g>
+
+  <!-- PANEL 4: SERVICE (TIMELINE VIEW) -->
+  <g transform="translate(525, 600)">
+    <rect width="425" height="500" rx="24" fill="white"/>
+    <text x="20" y="35" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">SERVICE &amp; HEALTH</text>
+    
+    <!-- Health Gauges -->
+    <g transform="translate(40, 100)">
+      <text x="0" y="0" font-family="Jost" font-size="12" fill="#7B8082">ENGINE OIL</text>
+      <rect y="10" width="10" height="100" rx="5" fill="#F2F2F2"/>
+      <rect y="40" width="10" height="70" rx="5" fill="#2D2926"/>
+      <text x="20" y="105" font-family="Jost" font-size="12" font-weight="600" fill="#2D2926">OK</text>
+      
+      <g transform="translate(100, 0)">
+        <text x="0" y="0" font-family="Jost" font-size="12" fill="#7B8082">COOLANT</text>
+        <rect y="10" width="10" height="100" rx="5" fill="#F2F2F2"/>
+        <rect y="20" width="10" height="90" rx="5" fill="#4F5A78"/>
+        <text x="20" y="105" font-family="Jost" font-size="12" font-weight="600" fill="#4F5A78">FULL</text>
+      </g>
+    </g>
+
+    <!-- Service Timeline -->
+    <g transform="translate(20, 260)">
+      <text x="0" y="0" font-family="Jost" font-size="14" font-weight="600" fill="#2D2926">Service Schedule</text>
+      <rect y="20" width="385" height="12" rx="6" fill="#F2F2F2"/>
+      <rect y="20" width="280" height="12" rx="6" fill="#ACAAAE"/>
+      <circle cx="280" cy="26" r="8" fill="white" stroke="#2D2926" stroke-width="2"/>
+      <text x="0" y="55" font-family="Jost" font-size="12" fill="#7B8082">Last: 10,000 km</text>
+      <text x="385" y="55" text-anchor="end" font-family="Jost" font-size="12" fill="#7B8082">Next: 30,000 km</text>
+    </g>
+    
+    <!-- Service Warnings -->
+    <rect x="20" y="360" width="385" height="100" rx="16" fill="#F2F2F2"/>
+    <text x="40" y="400" font-family="Jost" font-size="14" fill="#2D2926">Maintenance Status</text>
+    <text x="40" y="430" font-family="Jost" font-size="20" font-weight="600" fill="#2D2926">No service required</text>
+  </g>
+</svg>

@@ -64,7 +64,7 @@ const statusEndpoints = [
   "warnings",
 ];
 
-function createStatusRoute<T>(resource: string, volvoResource?: string) {
+function createStatusRoute(resource: string, volvoResource?: string) {
   router.get(`/vehicles/:vin/${resource}`, async (req, res) => {
     const { vin } = req.params;
     try {
@@ -101,7 +101,7 @@ const commandEndpoints = [
   "honk-flash",
 ];
 
-function createCommandRoute<T>(command: string) {
+function createCommandRoute(command: string) {
   router.post(`/vehicles/:vin/commands/${command}`, async (req, res) => {
     const { vin } = req.params;
     try {

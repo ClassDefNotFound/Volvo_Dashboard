@@ -1,0 +1,85 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#F2F2F2"/>
+  
+  <!-- Sidebar (Glassmorphism effect) -->
+  <rect x="0" y="0" width="280" height="800" fill="white" fill-opacity="0.8"/>
+  <line x1="280" y1="0" x2="280" y2="800" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- Logo placeholder -->
+  <text x="40" y="50" font-family="Jost, sans-serif" font-size="24" font-weight="600" fill="#2D2926">VOLVO</text>
+  
+  <!-- Navigation Links -->
+  <g transform="translate(40, 120)">
+    <text x="0" y="0" font-family="Jost" font-size="16" font-weight="600" fill="#2D2926">DRIVE</text>
+    <rect x="-10" y="15" width="250" height="40" rx="8" fill="#C8D4E1" fill-opacity="0.3"/>
+    <text x="10" y="40" font-family="Jost" font-size="14" fill="#4F5A78">Status &amp; Range</text>
+    
+    <text x="0" y="90" font-family="Jost" font-size="16" fill="#7B8082">SECURITY</text>
+    <text x="0" y="140" font-family="Jost" font-size="16" fill="#7B8082">SAFETY</text>
+    <text x="0" y="190" font-family="Jost" font-size="16" fill="#7B8082">SERVICE</text>
+  </g>
+  
+  <!-- Vehicle Info Card (Bottom of sidebar) -->
+  <g transform="translate(20, 600)">
+    <rect width="240" height="180" rx="16" fill="#FFFFFF" stroke="#E0E0E0"/>
+    <text x="20" y="40" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">XC60 Recharge</text>
+    <text x="20" y="65" font-family="Jost" font-size="14" fill="#7B8082">2023 • Crystal White</text>
+    <rect x="20" y="90" width="200" height="70" rx="8" fill="#F2F2F2"/>
+    <text x="120" y="130" text-anchor="middle" font-family="Jost" font-size="12" fill="#ACAAAE">Exterior Image Placeholder</text>
+  </g>
+  
+  <!-- Main Viewport Header -->
+  <text x="320" y="50" font-family="Jost" font-size="20" font-weight="500" fill="#2D2926">Vehicle Status</text>
+  <rect x="1050" y="30" width="120" height="36" rx="18" fill="#2D2926"/>
+  <text x="1110" y="54" text-anchor="middle" font-family="Jost" font-size="14" fill="white">Logout</text>
+
+  <!-- Central Car Blueprint -->
+  <g transform="translate(450, 150)">
+    <!-- Main Car Body Path (Stylized) -->
+    <path d="M150,50 C100,50 80,80 70,150 L70,450 C80,520 100,550 150,550 C200,550 220,520 230,450 L230,150 C220,80 200,50 150,50 Z" fill="none" stroke="#ACAAAE" stroke-width="2" stroke-dasharray="4 4"/>
+    
+    <!-- Windshield -->
+    <path d="M100,160 Q150,140 200,160" stroke="#ACAAAE" stroke-width="2" fill="none"/>
+    
+    <!-- Status Overlays: Doors (Green = Secure) -->
+    <path id="door-fl" d="M70,180 L65,180 L65,280 L70,280" stroke="#6B8F71" stroke-width="6" fill="none"/>
+    <path id="door-fr" d="M230,180 L235,180 L235,280 L230,280" stroke="#6B8F71" stroke-width="6" fill="none"/>
+    
+    <!-- Status Overlays: Tyre Warning (Red = Low Pressure) -->
+    <rect x="60" y="460" width="10" height="40" rx="2" fill="#CF6679"/>
+    <text x="40" y="485" text-anchor="end" font-family="Jost" font-size="12" fill="#CF6679">Low Pressure</text>
+    
+    <text x="150" y="320" text-anchor="middle" font-family="Jost" font-size="14" font-weight="500" fill="#6B8F71">● All Systems Secure</text>
+  </g>
+
+  <!-- Bottom Gauges Panel -->
+  <g transform="translate(320, 600)">
+    <rect width="840" height="180" rx="24" fill="white" fill-opacity="0.6"/>
+    
+    <!-- Fuel Gauge -->
+    <g transform="translate(150, 100)">
+      <path d="M-60,0 A60,60 0 0,1 60,0" fill="none" stroke="#E0E0E0" stroke-width="12" stroke-linecap="round"/>
+      <path d="M-60,0 A60,60 0 0,1 20,-56" fill="none" stroke="#4F5A78" stroke-width="12" stroke-linecap="round"/>
+      <text x="0" y="-10" text-anchor="middle" font-family="Jost" font-size="24" font-weight="600" fill="#2D2926">72%</text>
+      <text x="0" y="25" text-anchor="middle" font-family="Jost" font-size="14" fill="#7B8082">Fuel Level</text>
+    </g>
+    
+    <!-- Battery Gauge -->
+    <g transform="translate(420, 100)">
+      <path d="M-60,0 A60,60 0 0,1 60,0" fill="none" stroke="#E0E0E0" stroke-width="12" stroke-linecap="round"/>
+      <path d="M-60,0 A60,60 0 0,1 50,-30" fill="none" stroke="#C8D4E1" stroke-width="12" stroke-linecap="round"/>
+      <text x="0" y="-10" text-anchor="middle" font-family="Jost" font-size="24" font-weight="600" fill="#2D2926">88%</text>
+      <text x="0" y="25" text-anchor="middle" font-family="Jost" font-size="14" fill="#7B8082">Battery Charge</text>
+    </g>
+    
+    <!-- Odometer -->
+    <g transform="translate(650, 60)">
+      <text x="0" y="20" font-family="Jost" font-size="14" fill="#7B8082">ODOMETER</text>
+      <text x="0" y="60" font-family="Jost" font-size="42" font-weight="300" fill="#2D2926">12,450 km</text>
+      <rect x="0" y="80" width="120" height="4" rx="2" fill="#E0E0E0"/>
+      <rect x="0" y="80" width="80" height="4" rx="2" fill="#ACAAAE"/>
+      <text x="0" y="105" font-family="Jost" font-size="12" fill="#ACAAAE">Next service in 4,550 km</text>
+    </g>
+  </g>
+</svg>
