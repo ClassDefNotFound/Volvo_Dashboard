@@ -87,6 +87,62 @@ annotation so literal key types survive.
 
 ---
 
+## Testing Strategy
+
+No test framework existed before this point. Tests are introduced **per-milestone, alongside the change
+they cover** — not as a separate phase — so each tool arrives when there is a real reason to reach for it.
+
+### The stack
+
+| Layer | Tool | Why |
+|---|---|---|
+| Runner (front + back) | **Vitest** | Built on Vite; reuses this project's config and path aliases, transforms with esbuild. One runner and one assertion API across the whole stack. |
+| Component | **React Testing Library** + `jsdom` | Framework-agnostic, unchanged from Jest. `jsdom` is the default; Vitest browser mode is stable but slower and only earns its cost for real browser behaviour (computed styles, `IntersectionObserver`, focus traps, drag-and-drop). |
+| API mocking | **MSW** | Intercepts at the network layer instead of stubbing axios, so handlers survive a change of HTTP client. Makes 500s, slow responses and network errors first-class test inputs. |
+| Backend routes | **Supertest** | Wraps the Express app without binding a real port. |
+| E2E | **Playwright** | Free parallelism in CI, cross-browser, and the stronger ecosystem bet. Reserved for a handful of critical flows — E2E is the slowest, most brittle layer, so it stays thin. |
+
+**Toolchain note:** Vitest has supported rolldown-vite since **v3.2.2**, and overriding `vite` in
+`package.json` is the documented way to use it — so unlike `@tailwindcss/vite`, this is expected to work
+out of the box. Verify it early anyway; the failure mode would be the same class of resolver problem.
+
+### The validation loop
+
+The point of testing here is not coverage — it is a **fast, trustworthy signal that a refactor changed
+nothing it shouldn't have.** The loop for every change:
+
+```
+run the suite (green)  ->  make one change  ->  run the suite  ->  still green?  ->  commit
+```
+
+**This matters most during M2 (MUI removal), which rewrites ~17 files.** Well-written RTL tests query by
+**accessible role and text — never by class, `data-testid`, or component internals** — so
+`getByRole('button', { name: /logout/i })` matches an MUI `<Button>` and a Tailwind `<button>` equally.
+That is what makes them a genuine migration safety net rather than churn:
+
+> **Write the characterization test against the MUI component, migrate the component, and the test must
+> pass untouched. If a test needs editing to survive the migration, that is a signal it was asserting on
+> implementation rather than behaviour.**
+
+That property is also the single best argument for RTL's query priority (`getByRole` > `getByLabelText`
+> `getByText` > `getByTestId`), which otherwise reads as arbitrary style advice.
+
+### Rules
+- **Green suite is required to merge.** No coverage threshold — on a solo project a percentage target
+  mostly produces tests written to satisfy the number rather than to catch bugs. Coverage may be
+  *reported* to find gaps; it is not a gate.
+- **Test behaviour, not implementation.** No assertions on class names, DOM structure, or internal state.
+- **`getByTestId` is a last resort**, and needs a comment explaining why the accessible query failed.
+- **A bug fix starts with a failing test** that reproduces it — the `useVehicleData` race and the
+  never-clearing error in M3 are the ideal first examples.
+- **Keep E2E thin.** Auth gate, VIN selection, one command round-trip. Everything else belongs lower down.
+
+### CI
+GitHub Actions runs `build`, `lint`, and `test` on every PR, making the loop enforced rather than
+remembered. E2E runs there too, but should be a separate job so a slow browser run never blocks fast feedback.
+
+---
+
 ## Current Status
 
 > Task tracking has moved to **GitHub issues** (`ClassDefNotFound/Volvo_Dashboard`), organised by milestone M0–M7.
@@ -249,13 +305,17 @@ with a documented default and a `// TODO` — an honest hardcode beats a silent 
 ## Verification Checklist
 
 ### Per-commit gates
-1. `npm run build && npm run lint` clean. (`npm run build` only became a trustworthy gate once the
-   `src="/src/assets/volvo_logo.svg"` string was replaced with a real import — that path worked in dev
-   but broke the production build, because Vite only serves `/src/*` from the dev server.)
+1. `npm run build && npm run lint && npm run test` clean — enforced by GitHub Actions on every PR.
+   (`npm run build` only became a trustworthy gate once the `src="/src/assets/volvo_logo.svg"` string was
+   replaced with a real import — that path worked in dev but broke the production build, because Vite
+   only serves `/src/*` from the dev server.)
 2. `npm run dev:all` — Redis (via `predev:all`), backend, and frontend start cleanly.
    Note the Volvo developer-portal test token expires every 15 minutes.
 
 ### Migration milestones
+2b. **Throughout M2:** every component migration must leave the characterization tests **passing
+   untouched**. Editing a test to make it pass after a styling change means the test was asserting on
+   implementation — fix the test's queries, not the assertion.
 3. **End of M2:** `grep -rn "@mui\|@emotion\|sx=" src/` returns nothing.
    Record the bundle-size delta — baseline before MUI removal was **492.85 kB raw / 155.45 kB gzipped**.
 4. **End of M4:** the 11 adapter panels are gone. Check with
