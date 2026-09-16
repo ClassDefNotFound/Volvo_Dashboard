@@ -66,6 +66,66 @@ Two Tailwind v4 gotchas worth recording:
 Status colors do **not** flip with mode. Components must never hardcode hex — reading
 `--color-status-*` means dark mode comes free.
 
+### Mockup reconciliation (swept 2026-09-16)
+
+A line-by-line comparison of `src/` against the three wireframes. Recorded because these gaps are
+invisible until you try to build the screen, and because the resolutions are decisions, not facts.
+
+**Confirmed: there is no generic table anywhere in the new design.** All four category panels are
+bespoke — radial gauges and stat cards (Drive), a mini car blueprint plus a 3-row summary (Security),
+tyre cards and a 23-light indicator grid (Safety), vertical bar gauges and a service timeline (Service).
+`StatusTable` has no successor, which is the strongest single confirmation that the UI is being replaced
+rather than restyled.
+
+Consequences for the formatters currently inside `StatusTable`:
+- `formatCamelCaseText` — **dead.** Every label in the mockups is hand-written ("Central Lock",
+  "Tyre Pressure", "ENGINE OIL"). Nothing renders auto-formatted API keys.
+- `formatTimestamp` — **dead.** No timestamp appears in any wireframe.
+- `formatValueWithUnit` — survives in spirit, but the mockups show `12,450 km` with a thousands
+  separator, which the current code does not do. That is new locale-formatting work, not a hoist.
+
+**What survives:** `App.tsx` auth gate, `LoginPage` (absent from the mockups, so unchanged),
+`volvo_api.ts`, `useVehicleData`, `useVin` / `VinContext`, and the mobile command bar's structure
+(the mockup shows 5 icons to the current 6).
+
+#### Resolved design gaps
+
+| Gap | Resolution |
+|---|---|
+| **Desktop wireframe shows no command controls at all**, yet `CommandPanel` lives in the drawer being deleted | Commands become an **icon bar in the main viewport header**, beside Logout. Always visible, reuses the mobile bar's icon vocabulary, and does not compete with the sidebar's category nav. |
+| **Desktop wireframe shows no VIN selector** (mobile has a `VIN: YV1..▾` pill) | The VIN selector joins the same main header, next to the command icons. Treated as a mockup omission rather than a removal — multi-vehicle accounts still need it. |
+| **Mockups show "72% Fuel", but `FuelStatus.fuelAmount` is litres with no capacity field** | Render a **percentage only when a tank capacity is known** for the model, otherwise fall back to showing litres. Never invent a capacity — this is the wall the old prototype hit with its hardcoded `/60`. `batteryChargeLevel` is unaffected; it is already a percentage. |
+
+#### Correction to an earlier draft of this guide
+The mobile layout was described as having a "bottom category nav". It does not:
+`MOBILE_DASHBOARD_WIREFRAME.svg` puts the four categories in a **horizontal pill row** beneath the hero
+car, and reserves the **sticky bottom bar for commands**. Two different components.
+
+---
+
+### The derivation layer
+
+**The new design is summary-first, and the current codebase has no derivation logic at all** — it renders
+raw API fields into tables. The mockups display values that are not API fields:
+
+| Displayed | Derived from |
+|---|---|
+| "Windows: **1 AJAR**" | a count across the 5 `WindowStatus` fields |
+| "**+ 17 more OK**" | an aggregate across the 23 `Warnings` lights |
+| "● **All Systems Secure**" / "**SECURE**" | a roll-up across doors, windows, central lock and tyres |
+| "RANGE (TOTAL) **420 km**" | `distanceToEmptyTank` **+** `distanceToEmptyBattery` — the API exposes these separately, never as a total |
+| "Next service in 4,550 km" | `distanceToServiceKm` — available directly, no derivation needed |
+
+These live in **`src/lib/derive/`** as pure functions over the shared API types, landing alongside the
+panel registry — before the UI needs them, so components stay presentational.
+
+They are also the **most testable code in the project**: pure input → output, no DOM, no mocking, no
+async. Table-driven tests over a handful of fixtures cover the interesting cases (all-secure, one ajar,
+several ajar, missing data). Worth writing test-first — the contract is fully knowable in advance.
+
+Design note: every roll-up needs an explicit **unknown** state. A vehicle that failed to report door
+status is not "secure", and defaulting a missing value to OK is how a dashboard tells a comfortable lie.
+
 ### Panels: config-driven registry
 Ten of the eleven panels differ only by `tableName` and `fetchFn`, so they collapse into a registry.
 Each `fetchFn` returns a different type, so the generic is discharged inside a factory
@@ -193,12 +253,17 @@ remembered. E2E runs there too, but should be a separate job so a slow browser r
 
 ### 🔲 Known Gaps (tracked as issues)
 - **Commands are not wired.** All 9 POST functions exist in `volvo_api.ts`; none are called from any component —
-  no `onClick` handlers in `CommandPanel`, `MobileCommandBar`, or the Logout button. *(M6)*
+  no `onClick` handlers in `CommandPanel`, `MobileCommandBar`, or the Logout button. *(M5)*
 - **`useVehicleData` correctness** — no abort/cleanup on VIN change (stale response can win a race);
-  `error` never clears on a successful refetch; `fetchFn` sits in the dep array. *(M3)*
-- **`useBreakpoint.isMobile`** uses `down("sm")` (600px) but this guide specifies `md` (900px). *(M2)*
+  `error` never clears on a successful refetch; `fetchFn` sits in the dep array. *(M2)*
+- **No derivation layer.** The new design is summary-first, but the codebase only renders raw API
+  fields. Aggregates like "1 AJAR", "+17 more OK" and total range have to be built. *(M3)*
 - **Panel duplication** — 10 of the 11 panels are identical 20-line adapters differing only by
-  `tableName` and `fetchFn`. Being replaced by a config-driven registry. *(M4)*
+  `tableName` and `fetchFn`. Being replaced by a config-driven registry. *(M3)*
+- **`useBreakpoint.isMobile`** uses `down("sm")` (600px) but this guide specifies `md` (900px).
+  A carry-over fix; can land any time after M1, needed before the responsive work in *(M4)*.
+- **`LoginPage` passes a `MouseEvent` into `login()`**, and **`Dashboard.getVehicles()`** has no
+  `try/catch` and indexes `data[0]` unguarded. Both survive into the new shell. *(carry-over)*
 - **Theme direction** — the shipped theme was dark; the mockups specify Nordic Light.
   Resolved under "Decisions of Record" above: both, light as default. *(M1)*
 
@@ -228,10 +293,12 @@ lands here too, aimed at what survives a UI rebuild: the backend and pure logic.
 not after a registry multiplies its usage and bakes in its current semantics. This work is entirely
 presentation-agnostic, so it is unaffected by the UI rebuild.
 
-**M3 (registry) before M4 (UI).** The 4-category registry *is* the new information architecture — the
-sidebar and the registry are the same idea expressed twice. Establishing it first means the UI build
-consumes a declarative structure instead of doing another round of file shuffling. The registry's default
-renderer is expected to be replaced during M4; because the factory abstracts it, that is a one-place change.
+**M3 (registry + derivations) before M4 (UI).** The 4-category registry *is* the new information
+architecture — the sidebar and the registry are the same idea expressed twice. Establishing it first
+means the UI build consumes a declarative structure instead of doing another round of file shuffling.
+The derivation layer lands here too: the new design is summary-first, and building those pure functions
+before the components that display them keeps the components presentational. Both are pure and
+fully testable ahead of any UI existing.
 
 **Within M4 — build in this order to avoid rework:**
 
@@ -274,7 +341,7 @@ breakpoints cannot drift:
 
 | Breakpoint | Value | Layout |
 |---|---|---|
-| `< md` (< 900px) | mobile | Single column, sticky bottom command bar + bottom `Sheet` |
+| `< md` (< 900px) | mobile | Hero car, horizontal category **pill row**, content card, sticky bottom **command** bar + bottom `Sheet` for overflow commands |
 | `md–lg` (900–1200px) | tablet | Sidebar starts collapsed, toggle opens an overlay `Sheet` |
 | `> lg` (> 1200px) | desktop | Permanent sidebar (280px) + main viewport |
 
@@ -332,8 +399,12 @@ justify the abstraction. Respect `prefers-reduced-motion` on the fill animation.
 
 **Watch the units.** `FuelStatus.batteryChargeLevel.value` is already a percentage, but
 `fuelAmount.value` is **litres** and the API exposes no tank-capacity field. The earlier prototype
-divided by a hardcoded `60`. Either derive capacity from `VehicleDetails` or make `max` an explicit prop
-with a documented default and a `// TODO` — an honest hardcode beats a silent one.
+divided by a hardcoded `60`.
+
+**Resolution:** render a percentage **only when a capacity is known** for the model, otherwise fall back
+to showing litres (`43 L`). `ArcGauge` should therefore accept an optional `max` and have a defined
+behaviour when it is absent — a bare value readout rather than an arc. Never invent a capacity to make
+the gauge look complete.
 
 ### Status Color Conventions
 - `LOCKED` / `NO_WARNING` / `NORMAL` → `--color-status-ok` (`#6B8F71`)
@@ -371,7 +442,8 @@ with a documented default and a `// TODO` — an honest hardcode beats a silent 
 
 ### Functional
 5. Desktop: permanent sidebar with 4 categories, interactive car in main viewport, gauge row at bottom
-6. Mobile: single-column layout, sticky bottom command bar, slide-up sheet for full commands
+6. Mobile: hero car, horizontal category pill row, content card, sticky bottom **command** bar,
+   slide-up sheet for overflow commands. (Categories are pills, not a bottom nav — the bottom bar is commands.)
 7. Tablet: collapsed sidebar, toggle opens overlay
 8. Changing VIN — all data re-fetches. **Throttle to Slow 3G and switch VIN rapidly**: the final render
    must match the final selection (this is the stale-response race).
