@@ -108,24 +108,46 @@ out of the box. Verify it early anyway; the failure mode would be the same class
 
 ### The validation loop
 
-The point of testing here is not coverage — it is a **fast, trustworthy signal that a refactor changed
-nothing it shouldn't have.** The loop for every change:
+The point of testing here is not coverage — it is a **fast, trustworthy signal**. The loop for every change:
 
 ```
 run the suite (green)  ->  make one change  ->  run the suite  ->  still green?  ->  commit
 ```
 
-**This matters most during M2 (MUI removal), which rewrites ~17 files.** Well-written RTL tests query by
-**accessible role and text — never by class, `data-testid`, or component internals** — so
-`getByRole('button', { name: /logout/i })` matches an MUI `<Button>` and a Tailwind `<button>` equally.
-That is what makes them a genuine migration safety net rather than churn:
+Enforced by CI on every PR.
 
-> **Write the characterization test against the MUI component, migrate the component, and the test must
-> pass untouched. If a test needs editing to survive the migration, that is a signal it was asserting on
-> implementation rather than behaviour.**
+### What to test early, and what to wait on
 
-That property is also the single best argument for RTL's query priority (`getByRole` > `getByLabelText`
-> `getByText` > `getByTestId`), which otherwise reads as arbitrary style advice.
+**The UI is being scrapped, not ported.** The current dashboard (11 tabs, drawer, tables) is replaced by
+the Nordic Horizon design, so tests asserting on current UI behaviour — tab switching, drawer state,
+current table structure — would describe behaviour that is deliberately being deleted. Writing them
+would be churn, and worse, it teaches distrust of the suite.
+
+So testing follows what **survives a UI rebuild**:
+
+| Test early — presentation-agnostic | Wait for the new UI |
+|---|---|
+| The whole backend (`server/routes/api.ts`) | Component structure and layout |
+| `useVehicleData`, `volvo_api.ts`, hooks | Tab / drawer / navigation behaviour |
+| Pure logic: formatters, gauge math | Anything asserting on current screens |
+| The registry contract — all 11 endpoints reachable | |
+
+**Test-first where the contract is knowable in advance:**
+- **Bug fixes — always.** The `useVehicleData` race and sticky error are the ideal examples: you know
+  exactly what correct looks like, so the test comes first and must fail against current `main`.
+- **Pure logic** — formatters, gauge math, registry wiring.
+- **Backend routes** — the API shape is already fixed.
+
+**Test-after, but in the same PR,** for UI components — their behaviour is decided while building
+(what happens when a command fails mid-flight, when a VIN has no data, when one endpoint 500s), and
+those decisions cannot be meaningfully asserted before they exist.
+
+### Query discipline
+
+`getByRole` > `getByLabelText` > `getByText` > `getByTestId`. Never assert on class names, DOM
+structure, or internal state. This still matters even though there is no port to survive: role-based
+queries are what let a component be restyled or restructured without rewriting its test, and they
+double as an accessibility check — if you cannot query it by role, a screen reader cannot find it either.
 
 ### Rules
 - **Green suite is required to merge.** No coverage threshold — on a solo project a percentage target
@@ -133,8 +155,13 @@ That property is also the single best argument for RTL's query priority (`getByR
   *reported* to find gaps; it is not a gate.
 - **Test behaviour, not implementation.** No assertions on class names, DOM structure, or internal state.
 - **`getByTestId` is a last resort**, and needs a comment explaining why the accessible query failed.
-- **A bug fix starts with a failing test** that reproduces it — the `useVehicleData` race and the
-  never-clearing error in M3 are the ideal first examples.
+- **A bug fix starts with a failing test** that reproduces it.
+- **Never write a test for a component slated for deletion.**
+- **Do not test what the compiler already proves.** The registry's type-level guarantees (the generic
+  discharged inside the factory, `satisfies` preserving literal keys) are enforced by `tsc`; runtime
+  tests for them are noise.
+- **Do not hit the real Volvo API from tests.** The developer-portal token expires every 15 minutes,
+  so a suite touching it fails for reasons unrelated to your code. Stub at the network boundary.
 - **Keep E2E thin.** Auth gate, VIN selection, one command round-trip. Everything else belongs lower down.
 
 ### CI
@@ -182,17 +209,31 @@ remembered. E2E runs there too, but should be a separate job so a slow browser r
 Task-level detail lives in GitHub issues. What follows is the **ordering logic** — why the work happens
 in this sequence, which is the part that isn't obvious from an issue list.
 
-**M0 Hygiene → M1 Tailwind → M2 MUI removal** before any feature work. A styling migration touching ~17
-files is far cheaper on a codebase that isn't simultaneously growing. Doing the Nordic Horizon redesign
-on MUI and *then* migrating would mean building the same screens twice.
+**Build forward, do not port.** The current UI is being scrapped, so there is no separate "migrate MUI to
+Tailwind" step. Porting `StatusTable`, `VehicleDataPanel`, `TabPanelWrapper` and the drawer to Tailwind
+while preserving their behaviour, only for the redesign to delete or reshape them, would mean building
+the same screens twice.
 
-**M3 (data-layer correctness) before M4 (registry).** Fix `useVehicleData` while there are 11 call sites,
-not after a registry multiplies its usage and bakes in its current semantics.
+Instead, **new Tailwind components are written directly in the target design, and old components are
+deleted as each is replaced** — a strangler pattern on the UI. MUI leaves when its last consumer does,
+rather than as a milestone of its own. The app stays working at every step, and nothing is built twice.
 
-**M4 (registry) before M5 (redesign).** The redesign needs panels grouped by the 4 categories; the
-registry is what makes that grouping declarative instead of another round of file shuffling.
+The ordering that follows from this:
 
-**Within M5 — build in this order to avoid rework:**
+**M1 (Tailwind + tokens + test foundation) first.** Tokens must exist before any new component is written,
+or every component gets built twice — once with ad-hoc colours and once with tokens. The test foundation
+lands here too, aimed at what survives a UI rebuild: the backend and pure logic.
+
+**M2 (data-layer correctness) before M3 (registry).** Fix `useVehicleData` while there are 11 call sites,
+not after a registry multiplies its usage and bakes in its current semantics. This work is entirely
+presentation-agnostic, so it is unaffected by the UI rebuild.
+
+**M3 (registry) before M4 (UI).** The 4-category registry *is* the new information architecture — the
+sidebar and the registry are the same idea expressed twice. Establishing it first means the UI build
+consumes a declarative structure instead of doing another round of file shuffling. The registry's default
+renderer is expected to be replaced during M4; because the factory abstracts it, that is a one-place change.
+
+**Within M4 — build in this order to avoid rework:**
 
 1. **`useVehicleSummary(vin)`** — replaces 11 individual tab fetches with one parallel `Promise.allSettled`,
    eliminating pop-in. Must return **per-slice** results, not one global error: a single 500 from
@@ -209,8 +250,9 @@ registry is what makes that grouping declarative instead of another round of fil
 4. **Wire data** — connect `useVehicleSummary` output to `InteractiveCar` fill props and sidebar summaries.
 5. **Gauges + polish** — SVG arc gauges for fuel/battery, CSS transitions on SVG fills.
 
-**M6 (commands) last** because it's independent of the redesign and benefits from the toast/dialog
-primitives that land with shadcn.
+**M5 (commands) after the UI** because it's independent of the redesign and benefits from the
+toast/dialog primitives that land with shadcn. **M6** closes out with polish and a thin E2E suite,
+written once the UI has stopped moving.
 
 ---
 
@@ -312,18 +354,20 @@ with a documented default and a `// TODO` — an honest hardcode beats a silent 
 2. `npm run dev:all` — Redis (via `predev:all`), backend, and frontend start cleanly.
    Note the Volvo developer-portal test token expires every 15 minutes.
 
-### Migration milestones
-2b. **Throughout M2:** every component migration must leave the characterization tests **passing
-   untouched**. Editing a test to make it pass after a styling change means the test was asserting on
-   implementation — fix the test's queries, not the assertion.
-3. **End of M2:** `grep -rn "@mui\|@emotion\|sx=" src/` returns nothing.
-   Record the bundle-size delta — baseline before MUI removal was **492.85 kB raw / 155.45 kB gzipped**.
-4. **End of M4:** the 11 adapter panels are gone. Check with
+### Milestone gates
+3. **End of M3:** the 11 adapter panels are gone. Check with
    ```sh
-   ls src/components/dashboard/panels/*Panel.tsx | wc -l   # 13 now -> 2 after M4
+   ls src/components/dashboard/panels/*Panel.tsx | wc -l   # 13 now -> 2 after M3
    ```
    The two survivors are `VehicleDataPanel.tsx` and `VehicleInfoPanel.tsx`
    (`commands/CommandPanel.tsx` sits in a subdirectory and is unaffected).
+4. **Throughout M4:** each new component lands with its own tests in the same PR, and deletes the old
+   component it replaces in the same commit. Two implementations of the same screen should never
+   coexist past a single PR.
+5. **End of M4:** `grep -rn "@mui\|@emotion\|sx=" src/` returns nothing — MUI leaves as a consequence of
+   the last consumer being replaced, not as a milestone of its own. Then record the bundle-size delta;
+   the baseline is **492.85 kB raw / 155.45 kB gzipped** (measured 2026-09-09, commit `5599356`).
+   Also confirm `package.json` no longer lists `@mui/*`, `@emotion/*`, or `the-new-css-reset`.
 
 ### Functional
 5. Desktop: permanent sidebar with 4 categories, interactive car in main viewport, gauge row at bottom
