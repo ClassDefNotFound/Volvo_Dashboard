@@ -11,7 +11,7 @@ import type {
   Response,
   NextFunction,
 } from "express-serve-static-core";
-import type { TokenResponse } from "@shared/types/api.js";
+import type { Token } from "@shared/types/api.js";
 
 const app = express();
 
@@ -65,7 +65,7 @@ async function ensureAuthenticated(
     req.session.tokenExpiry < Date.now() + oneHour
   ) {
     try {
-      const refreshResponse = await axios.post<TokenResponse>(
+      const refreshResponse = await axios.post<Token>(
         config.volvoTokenUrl,
         new URLSearchParams({
           grant_type: "refresh_token",

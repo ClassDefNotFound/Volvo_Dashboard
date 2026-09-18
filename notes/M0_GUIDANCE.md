@@ -87,6 +87,81 @@ targets.
 
 ---
 
+## Wiring a check into npm scripts
+
+Having a `typecheck:server` script is not the same as having a gate. Where it is wired decides
+what it actually catches, and two of the three wirings tried during M0 were silently inert.
+
+### `&&` after a long-running process is always dead code
+
+```json
+"dev:server": "npm run --prefix server start && npm run typecheck:server"
+```
+
+`start` is `tsx watch server.ts`. A watch process does not exit, so the right-hand side never
+runs — and on `Ctrl-C` the left side exits non-zero, so `&&` still will not run it. Verified by
+booting with a deliberate type error present: the server came up clean and the check never fired.
+
+**The rule:** anything you want to happen alongside a server or watcher needs
+
+| Want | Mechanism |
+|---|---|
+| before it starts | a `pre<script>` lifecycle hook |
+| at the same time | `concurrently` |
+| after it exits | `&&` — which for a watch process means *never* |
+
+This recurs the moment Vitest's watch mode lands in #8. Same shape, same trap.
+
+### A dev-time check and a merge gate are different moments
+
+They are not alternatives, and choosing one over the other loses coverage:
+
+- **`predev:server`** catches breakage at the start of a session. Runs once, at startup — it says
+  "types were clean when I booted," not "types are clean now," because `tsx watch` restarts on
+  file change without re-running the check. It also blocks startup on a type error, which is a
+  real trade-off when you want to run the server mid-refactor.
+- **`build`** catches breakage before merge. This is the one CI runs, and therefore the only one
+  that is a gate.
+
+Keep both. Or, if gating startup is the part that grates, add the check as a third `concurrently`
+pane in `dev:all` so it reports without blocking.
+
+### Prefer `&&` over `concurrently` for the gate itself
+
+`concurrently` does propagate failure — its default is `--success all` — so a parallel build gate
+is not broken. It is still the worse choice:
+
+- **Interleaved output is worst exactly when the build fails**, which is the only time anyone
+  reads it.
+- **`--names` maps positionally**, so it is easy to label the panes backwards and spend a minute
+  reading the server's error as the client's.
+- **Without `--kill-others-on-fail`, `vite build` still writes `dist/`** while the typecheck
+  fails, so a red build leaves artifacts behind.
+
+Sequential `tsc -b && vite build && npm run typecheck:server` is deterministic and legible, and
+the parallelism was worth about a second. `concurrently` earns its place in `dev:all`, where both
+processes genuinely must run at once. A gate is not that situation.
+
+### Test the gate by breaking it, and check the exit code
+
+A gate nobody has watched fail is a gate being assumed — which is the whole reason this section
+exists. The cheapest probe is a throwaway file, which needs no edit to real code and cannot be
+forgotten in a diff:
+
+```sh
+echo 'export const broken: string = 42;' > server/__probe.ts
+npm run build; echo "exit=$?"   # expect a non-zero exit
+rm server/__probe.ts
+```
+
+Two traps in the verification itself:
+
+- **Check the exit code, not the output.** CI reads the status, not the text.
+- **`cmd | head` reports `head`'s exit code, not `cmd`'s.** A piped tsc run will happily print
+  errors and report success. Use `${PIPESTATUS[0]}`, or do not pipe.
+
+---
+
 ## Finding dead code and unused assets
 
 Four passes, cheapest first. Each catches a class the previous one structurally cannot — that
@@ -183,6 +258,40 @@ milestone is not the risk.
 This is the same reasoning that already parks the `useBreakpoint.isMobile` `sm` → `md` fix at
 "any time after M1" in the implementation guide. Worth noting the pattern: **M0 fixes the
 gates; it does not fix behaviour.** Behaviour changes wait for the harness that can prove them.
+
+### The same rule, applied a second time: strictness flags
+
+Aligning the two tsconfigs turned on `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess`
+for the frontend, which took `npm run build` from green to 13 errors. They split cleanly along the
+same line:
+
+- **11× TS2375** from `exactOptionalPropertyTypes` — every panel passing `error={error}`
+  (`string | undefined`) into a prop declared `error?: string`. Under that flag, "key absent" and
+  "key present holding `undefined`" stop being the same thing. Fixed by one line in
+  `VehicleDataTableProps`: `error?: string | undefined`. No behaviour change, so it stayed on.
+- **2× TS2532** from `noUncheckedIndexedAccess` — `Object is possibly 'undefined'`, one of which
+  is `vehicles.data.data[0].vin` in `Dashboard.tsx`. That is **the exact bug already filed as
+  #24.** The flag turned a runtime bug into a compile error, which is the best thing a flag can do.
+
+So the flag forces #24's fix — and #24 is deliberately parked behind the test harness. Enabling it
+in M0 would drag the fix forward without its test, by way of a compiler error rather than a
+decision.
+
+**Resolution: `noUncheckedIndexedAccess` is commented out in `tsconfig.app.json` and turned on
+inside #24's PR**, alongside the fix and its failing test. Coupling them means the compiler is
+what confirms the work is complete, rather than someone remembering to flip a flag later.
+
+The generalisation: **a strictness flag that surfaces known bugs belongs in the PR that fixes
+them, not in the hygiene milestone.** Turning it on early converts a tracked, test-first fix into
+an untracked, build-breaking one. The same question will come back for
+`noPropertyAccessFromIndexSignature` and the `noImplicit*` family, still commented out in
+`server/tsconfig.json`.
+
+A corollary learned the hard way here: with the flag off, nothing forced the `data[0]` guard, and
+it got written anyway — as a bare `throw` inside an async `useEffect` with no `.catch()`, which
+React cannot surface, so it rendered nothing and logged an unhandled rejection. Half a bug fix
+without its test is worse than none: it looks handled and is not.
+
 
 ---
 

@@ -8,7 +8,7 @@
   "main": "server.ts",
   "scripts": {
     "start": "tsx watch server.ts",
-    "dev": "tsx watch server.ts",
+    "typecheck:server": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

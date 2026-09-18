@@ -7,7 +7,7 @@ type VehicleDataTableProps<T extends Record<string, StatusEntry>> = {
   tableName: string;
   data: T | undefined;
   loading: boolean;
-  error?: string;
+  error?: string | undefined;
 };
 
 const VehicleDataTable = <T extends Record<string, StatusEntry>>({

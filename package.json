@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "typecheck:server": "npm run --prefix server typecheck:server",
+    "predev:server": "npm run typecheck:server",
     "dev:server": "npm run --prefix server start",
     "dev:all": "concurrently --names server,client --prefix-colors blue,green \"npm run dev:server\" \"npm run dev\"",
     "predev:all": "npm run docker:up",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run typecheck:server",
     "lint": "eslint .",
     "preview": "vite preview",
     "docker:up": "docker compose up -d",
