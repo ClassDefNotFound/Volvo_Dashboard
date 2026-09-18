@@ -10,7 +10,7 @@
     "dev:server": "npm run --prefix server start",
     "dev:all": "concurrently --names server,client --prefix-colors blue,green \"npm run dev:server\" \"npm run dev\"",
     "predev:all": "npm run docker:up",
-    "build": "tsc -b && vite build && npm run typecheck:server",
+    "build": "tsc -b && npm run typecheck:server && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "docker:up": "docker compose up -d",
