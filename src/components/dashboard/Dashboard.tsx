@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 
 import { getVehicles } from "@api/volvo_api";
+import volvoLogo from "@assets/volvo_logo.svg";
 import VinSelector from "./appbar/VinSelector";
 
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -40,7 +41,7 @@ const Dashboard = () => {
     return (
       <Box
         component="img"
-        src="/src/assets/volvo_logo.svg"
+        src={volvoLogo}
         alt="Volvo"
         sx={{ maxWidth: { xs: 100, sm: 200, md: 300 } }}
       />
