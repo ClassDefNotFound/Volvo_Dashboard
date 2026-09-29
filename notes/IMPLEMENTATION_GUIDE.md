@@ -262,19 +262,31 @@ feedback. This lands with the test harness in M1 — `test` has to exist before 
 
 ### 🔲 Known Gaps (tracked as issues)
 - **Commands are not wired.** All 9 POST functions exist in `volvo_api.ts`; none are called from any component —
-  no `onClick` handlers in `CommandPanel`, `MobileCommandBar`, or the Logout button. *(M5)*
+  no `onClick` handlers in `CommandPanel`, `MobileCommandBar`, or the Logout button.
+  *(M5 — tests in #16; the wiring itself has no issue yet, see below)*
 - **`useVehicleData` correctness** — no abort/cleanup on VIN change (stale response can win a race);
-  `error` never clears on a successful refetch; `fetchFn` sits in the dep array. *(M2)*
+  `error` never clears on a successful refetch; `fetchFn` sits in the dep array. *(#13, M2 — the test
+  reproduces both defects first; the fix lands in the same PR)*
 - **No derivation layer.** The new design is summary-first, but the codebase only renders raw API
-  fields. Aggregates like "1 AJAR", "+17 more OK" and total range have to be built. *(M3)*
+  fields. Aggregates like "1 AJAR", "+17 more OK" and total range have to be built. *(#18, M3)*
 - **Panel duplication** — 10 of the 11 panels are identical 20-line adapters differing only by
-  `tableName` and `fetchFn`. Being replaced by a config-driven registry. *(M3)*
+  `tableName` and `fetchFn`. Being replaced by a config-driven registry.
+  *(M3 — registry contract tests in #14; the refactor itself has no issue yet, see below)*
 - **`useBreakpoint.isMobile`** uses `down("sm")` (600px) but this guide specifies `md` (900px).
-  A carry-over fix; can land any time after M1, needed before the responsive work in *(M4)*.
+  A carry-over fix; can land any time after M1, needed before the responsive work in M4. *(#27)*
 - **`LoginPage` passes a `MouseEvent` into `login()`**, and **`Dashboard.getVehicles()`** has no
-  `try/catch` and indexes `data[0]` unguarded. Both survive into the new shell. *(carry-over)*
+  `try/catch` and indexes `data[0]` unguarded. Both survive into the new shell. *(#24 — also gates
+  turning on `noUncheckedIndexedAccess`, which is commented out in `tsconfig.app.json` and flips on
+  in that PR alongside the fix and its failing test)*
 - **Theme direction** — the shipped theme was dark; the mockups specify Nordic Light.
-  Resolved under "Decisions of Record" above: both, light as default. *(M1)*
+  Resolved under "Decisions of Record" above: both, light as default. *(#3 tokens, #4 ThemeProvider, M1)*
+
+> **Tracking gap, recorded rather than silently fixed.** M1 is fully populated, but M3–M5 carry
+> mostly *test* issues: the derivation layer (#18) is the only feature issue past M1. The registry
+> refactor, the M4 UI build steps, and the command wiring are described in this guide's build order
+> but have no issues of their own. That is fine while the build order is the working plan, and it
+> becomes a problem the moment work is picked up from the issue list instead. Populate M3–M5 before
+> starting M3.
 
 ---
 
