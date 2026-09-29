@@ -32,7 +32,7 @@ npm run docker:logs  # Tail Redis logs
 - **Entry point**: `server/server.ts` — Express app with CORS, session middleware, route mounting
 - **Config**: `server/config.ts` — centralized env var loading with local/OAuth mode detection
 - **Routes**: `server/routes/auth.ts` (OAuth login/callback/status/logout), `server/routes/api.ts` (Volvo API proxy)
-- **Redis**: `server/redis-store.ts` — Redis client + session store setup (file renamed from `redis.ts` to avoid shadowing the `redis` npm package when `baseUrl: "."` is set in tsconfig)
+- **Redis**: `server/redis-store.ts` — Redis client + session store setup. The name is historical: with `baseUrl: "."` set, a local `redis.ts` shadowed the `redis` npm package, so the file was renamed. `baseUrl` has since been removed, so bare specifiers mean packages again and the shadowing cannot recur — the file keeps the name because renaming it back would buy nothing.
 - **Auth modes**:
   - **Local mode**: `ACCESS_TOKEN` set without `CLIENT_ID`/`CLIENT_SECRET` — uses static token, skips OAuth
   - **OAuth mode**: Full Authorization Code flow with PKCE, Redis-backed sessions, automatic token refresh
@@ -46,7 +46,7 @@ npm run docker:logs  # Tail Redis logs
   - `src/components/dashboard/DashboardPage.tsx` — main dashboard (WIP)
 - **Base URL**: Configured via `VITE_BASE_URL` env var (points to backend)
 - **UI Library**: MUI (Material UI) v7
-- **CSS Reset**: Uses `the-new-css-reset` — imported in `App.tsx`
+- **CSS Reset**: MUI's `CssBaseline`, rendered in `App.tsx`. (`the-new-css-reset` was used originally; its import was dropped in `f8725bd` and the package removed in #21.)
 
 ### Shared Types (`shared/types/`)
 - `shared/types/api.ts` — TypeScript types for all Volvo API responses and commands
@@ -81,4 +81,6 @@ Always recommend best practices — for React, TypeScript, and software engineer
 - No state management library is in place yet
 - No routing library yet — auth/dashboard views are conditionally rendered
 - The Volvo developer portal test token expires every 15 minutes; full OAuth with refresh tokens requires deploying with CLIENT_ID/CLIENT_SECRET
-- The `redis` npm package requires `createRequire` workaround or file rename to avoid tsconfig `baseUrl` shadowing issues on Node.js v24
+- `server/` is an npm **workspace** of the root project — one lockfile, one `npm install`, `node_modules/server` is a symlink. It relies on TypeScript and `@types/node` hoisting from the root and would not install standalone.
+- `npm run build` type-checks **both** projects (`tsc -b && npm run typecheck:server && vite build`). `tsx` strips types without checking them, so the server is only verified by this gate.
+- Browser globals in server code are caught by `tsc` (no DOM lib), not by ESLint — `typescript-eslint` disables `no-undef`.
