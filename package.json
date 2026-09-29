@@ -23,7 +23,6 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "axios": "^1.13.4",
-    "dotenv": "^17.2.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -38,7 +37,6 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
-    "the-new-css-reset": "^1.11.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "npm:rolldown-vite@7.2.5"
