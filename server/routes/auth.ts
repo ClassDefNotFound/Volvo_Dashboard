@@ -1,8 +1,8 @@
 import { Router } from "express";
 import crypto from "crypto";
 import axios from "axios";
-import { config } from "config.js";
-import type { Token } from "../../shared/types/api.js";
+import { config } from "../config.js";
+import type { Token } from "@shared/types/api.js";
 
 const router = Router();
 

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { config } from "config.js";
+import { config } from "../config.js";
 import axios from "axios";
 import type { Request } from "express-serve-static-core";
-import type { Vehicles, VehicleDetails } from "../../shared/types/index.js";
+import type { Vehicles, VehicleDetails } from "@shared/types/index.js";
 
 const router = Router();
 

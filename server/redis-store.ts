@@ -1,6 +1,6 @@
 import { createClient } from "redis";
 import { RedisStore } from "connect-redis";
-import { config } from "config.js";
+import { config } from "./config.js";
 
 const DEFAULT_REDIS_URL = "redis://localhost:6379";
 

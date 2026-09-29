@@ -5,7 +5,7 @@ import axios from "axios";
 import { redisClient, redisStore, connectRedis } from "./redis-store.js";
 import authRoutes from "./routes/auth.js";
 import apiRoutes from "./routes/api.js";
-import { config } from "config.js";
+import { config } from "./config.js";
 import type {
   Request,
   Response,
