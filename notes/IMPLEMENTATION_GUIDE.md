@@ -48,11 +48,14 @@ Vite's PostCSS pipeline, so that path is safe. At this project's size the perfor
 unmeasurable. *(Spike outcome to be recorded here.)*
 
 ### Theme: light and dark, Nordic Light as default
-The mockups specify Nordic Light; the original `volvo_theme.ts` implemented `mode: "dark"`. Both are
-supported, light is the default, and the switch is built as a **three-layer design token system**:
+The mockups specify Nordic Light; `src/themes/volvo_theme.ts` currently implements `mode: "dark"` and is
+still live — `App.tsx` imports it and passes it to `ThemeProvider`. It is retired *by* M1, as part of
+building the token system below, not before. Both modes are supported in the target, light is the
+default, and the switch is built as a **three-layer design token system**:
 
 1. **Primitives** — raw hex named after the paint (`--volvo-sand-dune`, `--volvo-onyx-black`, …),
-   mode-agnostic. Source of truth is the `volvoColors` object from the retired `volvo_theme.ts`.
+   mode-agnostic. Source of truth is the `volvoColors` object exported from `volvo_theme.ts`, which is
+   why that file outlives the MUI theme it also defines.
 2. **Semantic aliases** — `--color-background`, `--color-text`, `--color-accent`, `--color-surface-glass`,
    `--color-status-{ok,warn,critical}`. Redefined under `.dark`. **Components reference only this layer.**
 3. **Tailwind exposure** — via `@theme inline`.
@@ -174,7 +177,7 @@ The point of testing here is not coverage — it is a **fast, trustworthy signal
 run the suite (green)  ->  make one change  ->  run the suite  ->  still green?  ->  commit
 ```
 
-Enforced by CI on every PR.
+To be enforced by CI on every PR — see the CI section below for what exists today.
 
 ### What to test early, and what to wait on
 
@@ -225,8 +228,14 @@ double as an accessibility check — if you cannot query it by role, a screen re
 - **Keep E2E thin.** Auth gate, VIN selection, one command round-trip. Everything else belongs lower down.
 
 ### CI
-GitHub Actions runs `build`, `lint`, and `test` on every PR, making the loop enforced rather than
-remembered. E2E runs there too, but should be a separate job so a slow browser run never blocks fast feedback.
+
+**There is no `.github/workflows/` directory yet.** Nothing is enforced automatically today; the gates
+below are run by hand. Recording this plainly because "enforced by CI" was previously written here as
+fact, and a gate that is assumed rather than observed is exactly the failure mode M0 existed to close.
+
+The target: GitHub Actions runs `build`, `lint`, and `test` on every PR, making the loop enforced rather
+than remembered. E2E runs there too, but as a separate job so a slow browser run never blocks fast
+feedback. This lands with the test harness in M1 — `test` has to exist before a workflow can run it.
 
 ---
 
@@ -418,44 +427,65 @@ the gauge look complete.
 ## Verification Checklist
 
 ### Per-commit gates
-1. `npm run build && npm run lint && npm run test` clean — enforced by GitHub Actions on every PR.
-   (`npm run build` only became a trustworthy gate once the `src="/src/assets/volvo_logo.svg"` string was
+
+Run by hand for now — there is no CI workflow yet (see the CI section above).
+
+1. **`npm run build`** — currently `tsc -b && npm run typecheck:server && vite build`. Sequential, not
+   parallel, so a failure is legible and a red build leaves no `dist/` behind. Since M0 this covers
+   `server/` too: `tsx watch` strips types without checking them, so before #19 every server change
+   shipped unverified. Verified by introducing a deliberate server type error and watching the command
+   exit non-zero.
+
+   (It only became a trustworthy gate at all once the `src="/src/assets/volvo_logo.svg"` string was
    replaced with a real import — that path worked in dev but broke the production build, because Vite
-   only serves `/src/*` from the dev server.)
-2. `npm run dev:all` — Redis (via `predev:all`), backend, and frontend start cleanly.
-   Note the Volvo developer-portal test token expires every 15 minutes.
+   only serves `/src/*` from the dev server. A string reference is invisible to the import graph, which
+   is why assets get checked by filename rather than by `import`.)
+2. **`npm run lint`** — `eslint .`, split by environment since #20: `globals.browser` plus the React
+   plugins for `src/**`, `globals.node` for `server/**` and `vite.config.ts`, and no runtime globals for
+   the type-only files in `shared/**`. Note that browser globals in server code surface as a **`tsc`**
+   error (TS2584), not a lint error — `typescript-eslint` disables `no-undef` because TypeScript does
+   that job better.
+3. **`npm run test`** — does not exist yet; arrives with the Vitest harness in M1.
+4. **`npm run dev:all`** — Redis (via `predev:all`), backend, and frontend start cleanly.
+   `predev:server` runs the server typecheck once at startup; note that this says "types were clean when
+   I booted", not "types are clean now", because `tsx watch` restarts on change without re-running it.
+   The Volvo developer-portal test token expires every 15 minutes, so a 401 here is the token, not a
+   regression.
 
 ### Milestone gates
-3. **End of M3:** the 11 adapter panels are gone. Check with
+5. **End of M3:** the 11 adapter panels are gone. Check with
    ```sh
    ls src/components/dashboard/panels/*Panel.tsx | wc -l   # 13 now -> 2 after M3
    ```
    The two survivors are `VehicleDataPanel.tsx` and `VehicleInfoPanel.tsx`
    (`commands/CommandPanel.tsx` sits in a subdirectory and is unaffected).
-4. **Throughout M4:** each new component lands with its own tests in the same PR, and deletes the old
+6. **Throughout M4:** each new component lands with its own tests in the same PR, and deletes the old
    component it replaces in the same commit. Two implementations of the same screen should never
    coexist past a single PR.
-5. **End of M4:** `grep -rn "@mui\|@emotion\|sx=" src/` returns nothing — MUI leaves as a consequence of
+7. **End of M4:** `grep -rn "@mui\|@emotion\|sx=" src/` returns nothing — MUI leaves as a consequence of
    the last consumer being replaced, not as a milestone of its own. Then record the bundle-size delta;
-   the baseline is **492.85 kB raw / 155.45 kB gzipped** (measured 2026-09-09, commit `5599356`).
-   Also confirm `package.json` no longer lists `@mui/*`, `@emotion/*`, or `the-new-css-reset`.
+   the baseline is **492.85 kB raw / 155.45 kB gzipped** (measured 2026-09-09 at commit `5599356`, and
+   unchanged as of the end of M0 — nothing removed in M0 was reachable from the bundle).
+   Also confirm `package.json` no longer lists `@mui/*` or `@emotion/*`. (`the-new-css-reset` was already
+   removed in #21 — its import was dropped in favour of MUI's `CssBaseline` back in `f8725bd`, leaving
+   the package behind as a dead dependency.)
 
 ### Functional
-5. Desktop: permanent sidebar with 4 categories, interactive car in main viewport, gauge row at bottom
-6. Mobile: hero car, horizontal category pill row, content card, sticky bottom **command** bar,
+8. Desktop: permanent sidebar with 4 categories, interactive car in main viewport, gauge row at bottom
+9. Mobile: hero car, horizontal category pill row, content card, sticky bottom **command** bar,
    slide-up sheet for overflow commands. (Categories are pills, not a bottom nav — the bottom bar is commands.)
-7. Tablet: collapsed sidebar, toggle opens overlay
-8. Changing VIN — all data re-fetches. **Throttle to Slow 3G and switch VIN rapidly**: the final render
-   must match the final selection (this is the stale-response race).
-9. Force a 500 — the error surfaces, and a subsequent successful refetch **clears** it.
-10. Kill one status endpoint — the rest of the dashboard still renders (partial-failure handling).
-11. Clicking a car part (door/tyre) — sidebar switches to that category
-12. SVG fills transition smoothly on state change
-13. Command button → per-button loading state → toast feedback. Two commands in flight show two
+10. Tablet: collapsed sidebar, toggle opens overlay
+11. Changing VIN — all data re-fetches. **Throttle to Slow 3G and switch VIN rapidly**: the final render
+    must match the final selection (this is the stale-response race).
+12. Force a 500 — the error surfaces, and a subsequent successful refetch **clears** it.
+13. Kill one status endpoint — the rest of the dashboard still renders (partial-failure handling).
+14. Clicking a car part (door/tyre) — sidebar switches to that category
+15. SVG fills transition smoothly on state change
+16. Command button → per-button loading state → toast feedback. Two commands in flight show two
     independent spinners, not one global one.
 
 ### Cross-cutting — check at every UI milestone
-14. **Both themes.** Toggle `.dark` on `<html>` and re-check; no hardcoded hex should survive.
-15. **All three breakpoints** — <900 / 900–1200 / >1200.
-16. **Keyboard only** — sidebar nav, tabs, VIN select, command buttons, and every interactive car part
+17. **Both themes.** Toggle `.dark` on `<html>` and re-check; no hardcoded hex should survive.
+18. **All three breakpoints** — <900 / 900–1200 / >1200.
+19. **Keyboard only** — sidebar nav, tabs, VIN select, command buttons, and every interactive car part
     reachable and operable; visible focus rings throughout.
