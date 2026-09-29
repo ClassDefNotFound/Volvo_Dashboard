@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 420" width="200" height="420">
+  <!--
+    Diagnostic view (top-down). Reference art for CarTopDownView.tsx.
+    Literal hex here is for the mockup only. The component reads semantic tokens instead:
+      ok #6B8F71, critical #CF6679, unknown #9A9A9E map to the color-status-* custom
+      properties. (Those names are spelled without their leading dashes on purpose:
+      a double dash is illegal inside an XML comment and breaks the whole document.)
+    Path ids match the PartId union in carParts.ts.
+  -->
+  <g id="car-topdown">
+    <!-- shell -->
+    <path id="body"
+      d="M100,8 C132,8 154,26 160,60 L166,150 C168,205 168,255 166,306 L160,376 C154,404 132,414 100,414 C68,414 46,404 40,376 L34,306 C32,255 32,205 34,150 L40,60 C46,26 68,8 100,8 Z"
+      fill="#E8E6E3" stroke="#ACAAAE" stroke-width="2"/>
+
+    <path id="hood"        d="M56,30 L144,30 L150,80 L50,80 Z"      fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
+    <path id="windshield"  d="M52,84 L148,84 L142,120 L58,120 Z"    fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.5"/>
+    <rect id="roof"   x="50" y="124" width="100" height="168" rx="8" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
+    <rect id="sunroof" x="68" y="142" width="64" height="66" rx="6"  fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.5"/>
+    <path id="rear-window" d="M58,296 L142,296 L148,332 L52,332 Z"  fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.5"/>
+    <path id="tailgate"    d="M52,336 L148,336 L143,390 L57,390 Z"  fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
+
+    <!-- mirrors -->
+    <path d="M36,124 L26,120 L24,130 L35,132 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
+    <path d="M164,124 L174,120 L176,130 L165,132 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
+
+    <!--
+      Doors. Hinge is the FORWARD edge (smaller y) on every door, matching a real car.
+      Ajar state = rotate outward about that hinge; see door-fl below.
+    -->
+    <path id="door-fl" d="M34,126 L50,126 L50,204 L33,204 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
+    <path id="door-rl" d="M33,208 L50,208 L50,286 L34,286 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
+    <path id="door-fr" d="M166,126 L150,126 L150,204 L167,204 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
+    <path id="door-rr" d="M167,208 L150,208 L150,286 L166,286 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
+
+    <!-- tyres -->
+    <rect id="tyre-fl" x="18"  y="72"  width="16" height="48" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rl" x="18"  y="300" width="16" height="48" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-fr" x="166" y="72"  width="16" height="48" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rr" x="166" y="300" width="16" height="48" rx="5" fill="#6B8F71"/>
+  </g>
+</svg>
