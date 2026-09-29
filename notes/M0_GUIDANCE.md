@@ -299,7 +299,13 @@ without its test is worse than none: it looks handled and is not.
 
 1. `npm run build` and `npm run lint` green — and the build gate now covers `server/`,
    demonstrated by watching a deliberate server type error fail it.
-2. `document` in a server file is a lint error; `process.env` in a server file is not.
+2. `process.env` in a server file is clean, and `document` in a server file fails the build —
+   as a **`tsc`** error (TS2584), not a lint error. The original wording expected ESLint to
+   catch it; it does not, because `typescript-eslint` sets `no-undef` to `0` on the grounds
+   that TypeScript does the job better. The server tsconfig pairs `lib: ["esnext"]` with
+   `types: ["node"]`, so there is no DOM lib and the reference cannot resolve. ESLint's half
+   is still real and still worth checking — `globals.node` is what keeps `process` from being
+   flagged — it is simply not the half that catches browser globals.
 3. `npm run dev:all` starts Redis, backend, and frontend cleanly, and the app behaves exactly as
    it did before M0. (The dev-portal test token expires every 15 minutes — a 401 here is the
    token, not the milestone.)
