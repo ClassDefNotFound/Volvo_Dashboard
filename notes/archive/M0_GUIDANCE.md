@@ -1,11 +1,18 @@
 # M0 — Hygiene & Tracking: Guidance Notes
 
-> Companion to `IMPLEMENTATION_GUIDE.md`, scoped to one milestone. The guide is the design doc
-> of record — the "why" behind the whole build. This file is the working notes for M0: what the
-> milestone is actually for, the judgment calls inside it, and the method for the one ticket
-> that is a hunt rather than a fix.
+> **ARCHIVED — M0 closed 2026-09-29.** Kept as the record of how the milestone was reasoned
+> about, not as live guidance. It describes a moment, not the system, so read it as history:
+> anything here about the current state of the repo is true of M0's tree, not of `main`.
+> `IMPLEMENTATION_GUIDE.md` remains the design doc of record.
 >
-> **Delete or archive this file when M0 closes.** It describes a moment, not the system.
+> Two things in here outlived the milestone and are worth lifting into the guide if they are
+> ever needed again: the **four-pass method for finding dead code** (each pass catches a class
+> the previous one structurally cannot), and the rule that **anything you want to happen
+> alongside a watcher needs a `pre` hook or `concurrently`, never `&&`** — which recurs the
+> moment Vitest's watch mode lands in #8.
+>
+> Original companion note: the working notes for M0 — what the milestone is actually for, the
+> judgment calls inside it, and the method for the one ticket that is a hunt rather than a fix.
 
 ---
 
