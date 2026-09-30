@@ -1,139 +1,127 @@
 <svg width="375" height="812" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!--
-    Mobile layout. Same diagnostic (top-down) car as the desktop wireframe; geometry and the
-    PartId list live in mockups/CAR_TOPDOWN_WIREFRAME.svg.
+    Mobile layout. Mirrors the Figma frame "Mobile - Vehicle Status" (Volvo Dashboard page).
 
-    Windows are NOT drawn on the car - all five WindowStatus fields sit in the GLASS rail beneath
-    it. See notes/CAR_VISUALIZATION_DESIGN.md, "Windows: reported, not drawn".
+    MOBILE IS HERO-ONLY. There is no view toggle and no top-down diagnostic here. The hero is the
+    photographic exteriorImageUrl render, which cannot show which door is ajar - so on mobile the
+    ROLL-UP IS THE ONLY PART-LEVEL SIGNAL, and it is load-bearing in a way the desktop's is not.
+    That is why it names the hidden parts explicitly ("+2 not visible here - Rear left window,
+    Rear right tyre") rather than offering a switch-view affordance: there is no other view to
+    switch to.
 
-    Categories are a horizontal PILL ROW; the sticky bottom bar is for COMMANDS. Two different
-    components - do not merge them into a bottom nav.
+    This matches what BMW ships - one consolidated statement, no per-part graphic - and it is why
+    the roll-up must read from the FULL summary, never from what happens to be visible.
 
-    Demo state matches the desktop wireframe: front-left door ajar, rear-left window open,
-    rear-right tyre low, rear-right door not reported.
+    Windows are not drawn and get no dedicated rail on mobile either; all five WindowStatus fields
+    roll up to the single "Windows" row inside the Security detail card. The desktop's GLASS rail
+    is a wide-viewport affordance. See notes/CAR_VISUALIZATION_DESIGN.md.
+
+    Demo state, shared with the other three mockups so they can be read against each other:
+    front-left door ajar, rear-left window ajar, rear-right tyre low. The Figma frame this mirrors
+    showed "Windows - All closed"; that one value was changed here to keep the scenario consistent
+    across the set. "ajar" rather than "open" because AJAR is the literal
+    WindowAndLockStatusValues member.
   -->
-  <rect width="375" height="812" fill="#F2F2F2"/>
+  <rect width="375" height="812" fill="#F2EFEA"/>
 
-  <!-- Header / AppBar -->
-  <rect width="375" height="60" fill="white"/>
-  <text x="20" y="38" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">VOLVO</text>
-  <rect x="260" y="15" width="95" height="30" rx="15" fill="#EFE9DD"/>
-  <text x="307" y="35" text-anchor="middle" font-family="Jost" font-size="12" fill="#2D2926">VIN: YV1..▾</text>
-  <line x1="0" y1="60" x2="375" y2="60" stroke="#E0E0E0"/>
+  <!-- AppBar -->
+  <rect width="375" height="60" fill="#FFFFFF"/>
+  <text x="20" y="35" font-family="Jost" font-size="14" font-weight="600" letter-spacing="2" fill="#1A1A1A">VOLVO</text>
+  <rect x="231" y="15" width="124" height="30" rx="15" fill="#FFFFFF" stroke="#E6E2DC"/>
+  <text x="293" y="34" text-anchor="middle" font-family="Jost" font-size="11" fill="#3C3C42">YV1·····4821  ▾</text>
 
-  <!-- Hero: diagnostic view -->
-  <g transform="translate(133.5, 66) scale(0.54)">
-    <path d="M100,6 C116,6 130,9 138,17 C152,30 164,54 166,86
-             L168,152 C169,214 169,268 168,308 L167,360 L167,396
-             L166,401 L34,401 L33,396 L33,360 L32,308
-             C31,268 31,214 32,152 L34,86 C36,54 48,30 62,17
-             C70,9 84,6 100,6 Z"
-          fill="#E8E6E3" stroke="#ACAAAE" stroke-width="2"/>
-    <path id="hood" d="M68,26 L132,26 L153,114 L47,114 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
-    <path d="M52,30 L148,30 L150,40 L50,40 Z" fill="#C3C0BB"/>
-    <path d="M46,117 L154,117 L148,172 L52,172 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
-    <rect x="50" y="174" width="100" height="126" rx="9" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
-    <rect x="53" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
-    <rect x="141" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
-    <rect x="66" y="184" width="68" height="72" rx="6" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.3"/>
-    <path d="M53,302 L147,302 L150,328 L50,328 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
-    <path id="tailgate" d="M46,332 L154,332 L154,392 L46,392 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
-    <path d="M36,380 L164,380 L164,392 L36,392 Z" fill="#C3C0BB"/>
-    <path d="M33,152 L15,144 L11,160 L32,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
-    <path d="M167,152 L185,144 L189,160 L168,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
-    <path id="door-fl" d="M32,150 L49,150 L49,226 L32,226 Z" fill="#CF6679" stroke="#ACAAAE" stroke-width="1.4" transform="rotate(35 40 150)"/>
-    <path id="door-rl" d="M32,230 L49,230 L49,300 L32,300 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
-    <path id="door-fr" d="M168,150 L151,150 L151,226 L168,226 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
-    <path id="door-rr" d="M168,230 L151,230 L151,300 L168,300 Z" fill="#9A9A9E" stroke="#ACAAAE" stroke-width="1.4"/>
-    <rect id="tank-lid" x="152" y="306" width="16" height="22" rx="4" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.3"/>
-    <rect id="tyre-fl" x="16"  y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
-    <rect id="tyre-rl" x="16"  y="312" width="17" height="58" rx="5" fill="#6B8F71"/>
-    <rect id="tyre-fr" x="167" y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
-    <rect id="tyre-rr" x="167" y="312" width="17" height="58" rx="5" fill="#CF6679"/>
+  <!-- Hero: the photographic exteriorImageUrl render. No vector parts, so nothing to outline. -->
+  <rect x="18" y="78" width="339" height="110" rx="16" fill="#EAE6E0" stroke="#E2DED8"/>
+  <text x="187.5" y="130" text-anchor="middle" font-family="Jost" font-size="12" fill="#8E8A85">exteriorImageUrl</text>
+  <text x="187.5" y="148" text-anchor="middle" font-family="Jost" font-size="10" fill="#ACA8A2">photographic hero · identity, not triage</text>
+
+  <!-- Roll-up: reads the FULL summary. The second line names what the hero cannot show. -->
+  <circle cx="24" cy="207" r="4" fill="#CF6679"/>
+  <text x="34" y="210" font-family="Jost" font-size="14" font-weight="500" fill="#1A1A1A">Front left door ajar</text>
+  <text x="34" y="227" font-family="Jost" font-size="11" fill="#8E3D49">+2 not visible here · Rear left window · Rear right tyre</text>
+
+  <!-- Category pills (NOT a bottom nav - the bottom bar is commands) -->
+  <rect x="18" y="248" width="66" height="34" rx="17" fill="#FFFFFF" stroke="#E6E2DC"/>
+  <text x="51" y="269" text-anchor="middle" font-family="Jost" font-size="12" fill="#5C5C62">Drive</text>
+  <rect x="92" y="248" width="80" height="34" rx="17" fill="#2A3B4C"/>
+  <text x="132" y="269" text-anchor="middle" font-family="Jost" font-size="12" font-weight="500" fill="#FFFFFF">Security</text>
+  <rect x="180" y="248" width="66" height="34" rx="17" fill="#FFFFFF" stroke="#E6E2DC"/>
+  <text x="213" y="269" text-anchor="middle" font-family="Jost" font-size="12" fill="#5C5C62">Safety</text>
+  <rect x="254" y="248" width="70" height="34" rx="17" fill="#FFFFFF" stroke="#E6E2DC"/>
+  <text x="289" y="269" text-anchor="middle" font-family="Jost" font-size="12" fill="#5C5C62">Service</text>
+
+  <!-- Always-on summary card -->
+  <rect x="18" y="300" width="339" height="226" rx="18" fill="#FFFFFF"/>
+
+  <path d="M56,376 A40,40 0 0,1 136,376" fill="none" stroke="#E6E2DC" stroke-width="8" stroke-linecap="round"/>
+  <path d="M56,376 A40,40 0 0,1 121.5,345.2" fill="none" stroke="#2A3B4C" stroke-width="8" stroke-linecap="round"/>
+  <text x="96" y="374" text-anchor="middle" font-family="Jost" font-size="20" font-weight="600" fill="#1A1A1A">72%</text>
+  <text x="96" y="390" text-anchor="middle" font-family="Jost" font-size="10" letter-spacing="1" fill="#6B6B70">FUEL</text>
+
+  <path d="M222,376 A40,40 0 0,1 302,376" fill="none" stroke="#E6E2DC" stroke-width="8" stroke-linecap="round"/>
+  <path d="M222,376 A40,40 0 0,1 299.2,361.3" fill="none" stroke="#6B8F71" stroke-width="8" stroke-linecap="round"/>
+  <text x="262" y="374" text-anchor="middle" font-family="Jost" font-size="20" font-weight="600" fill="#1A1A1A">88%</text>
+  <text x="262" y="390" text-anchor="middle" font-family="Jost" font-size="10" letter-spacing="1" fill="#6B6B70">BATTERY</text>
+
+  <rect x="42" y="416" width="291" height="1" fill="#E6E2DC"/>
+  <text x="42" y="455" font-family="Jost" font-size="26" font-weight="300" fill="#1A1A1A">12,450</text>
+  <text x="134" y="453" font-family="Jost" font-size="12" fill="#6B6B70">km</text>
+  <text x="42" y="474" font-family="Jost" font-size="10" letter-spacing="1" fill="#6B6B70">ODOMETER</text>
+  <rect x="42" y="488" width="291" height="5" rx="2.5" fill="#E6E2DC"/>
+  <rect x="42" y="488" width="204" height="5" rx="2.5" fill="#2A3B4C"/>
+  <text x="42" y="511" font-family="Jost" font-size="11" fill="#6B6B70">Next service in 4,550 km</text>
+
+  <!-- Selected category detail. Windows roll up to ONE row here - no glass rail on mobile. -->
+  <rect x="18" y="540" width="339" height="168" rx="18" fill="#FFFFFF"/>
+  <text x="38" y="566" font-family="Jost" font-size="10" font-weight="600" letter-spacing="1" fill="#6B6B70">SECURITY</text>
+
+  <circle cx="41.5" cy="592.5" r="3.5" fill="#6B8F71"/>
+  <text x="54" y="595" font-family="Jost" font-size="13" fill="#3C3C42">Central lock</text>
+  <text x="337" y="595" text-anchor="end" font-family="Jost" font-size="13" font-weight="500" fill="#6B8F71">Locked</text>
+  <rect x="54" y="606" width="283" height="1" fill="#EFEBE5"/>
+
+  <circle cx="41.5" cy="622.5" r="3.5" fill="#CF6679"/>
+  <text x="54" y="625" font-family="Jost" font-size="13" fill="#3C3C42">Windows</text>
+  <text x="337" y="625" text-anchor="end" font-family="Jost" font-size="13" font-weight="500" fill="#CF6679">1 ajar · rear left</text>
+  <rect x="54" y="636" width="283" height="1" fill="#EFEBE5"/>
+
+  <circle cx="41.5" cy="652.5" r="3.5" fill="#6B8F71"/>
+  <text x="54" y="655" font-family="Jost" font-size="13" fill="#3C3C42">Tailgate</text>
+  <text x="337" y="655" text-anchor="end" font-family="Jost" font-size="13" font-weight="500" fill="#6B8F71">Closed</text>
+  <rect x="54" y="666" width="283" height="1" fill="#EFEBE5"/>
+
+  <circle cx="41.5" cy="682.5" r="3.5" fill="#CF6679"/>
+  <text x="54" y="685" font-family="Jost" font-size="13" fill="#3C3C42">Front left door</text>
+  <text x="337" y="685" text-anchor="end" font-family="Jost" font-size="13" font-weight="500" fill="#CF6679">Ajar</text>
+
+  <!-- Sticky COMMAND bar -->
+  <rect y="724" width="375" height="88" fill="#FFFFFF"/>
+  <rect y="724" width="375" height="1" fill="#E2DED8"/>
+  <g fill="#F2EFEA">
+    <circle cx="52" cy="768" r="22"/>
+    <circle cx="120" cy="768" r="22"/>
+    <circle cx="188" cy="768" r="22"/>
+    <circle cx="256" cy="768" r="22"/>
+    <circle cx="324" cy="768" r="22"/>
   </g>
-
-  <!-- GLASS rail -->
-  <g transform="translate(18, 300)">
-    <g>
-      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
-      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
-      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">FL</text>
-    </g>
-    <g transform="translate(69, 0)">
-      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
-      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
-      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">FR</text>
-    </g>
-    <g transform="translate(138, 0)">
-      <rect width="63" height="38" rx="9" fill="white" stroke="#CF6679"/>
-      <rect x="10" y="9" width="20" height="7" rx="3" fill="#CF6679"/>
-      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">RL</text>
-    </g>
-    <g transform="translate(207, 0)">
-      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
-      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
-      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">RR</text>
-    </g>
-    <g transform="translate(276, 0)">
-      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
-      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
-      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">ROOF</text>
-    </g>
+  <g stroke="#3C3C42" stroke-width="1.6" fill="none" stroke-linecap="round">
+    <!-- lock -->
+    <rect x="44.5" y="766" width="15" height="10" rx="2.5"/>
+    <path d="M48,766 v-3 a4,4 0 0,1 8,0 v3"/>
+    <!-- unlock -->
+    <rect x="112.5" y="766" width="15" height="10" rx="2.5"/>
+    <path d="M116,766 v-3 a4,4 0 0,1 8,0"/>
+    <!-- engine / power -->
+    <path d="M188,760 v8"/>
+    <path d="M182.5,762.5 a8,8 0 1,0 11,0"/>
+    <!-- climate -->
+    <path d="M248,764 h16"/>
+    <path d="M248,769 h10"/>
+    <path d="M248,774 h13"/>
   </g>
-
-  <!-- Roll-up: full summary, not just what is visible -->
-  <text x="187.5" y="358" text-anchor="middle" font-family="Jost" font-size="12" font-weight="500" fill="#CF6679">FL door ajar • RL window open • RR tyre low</text>
-
-  <!-- Category Selector (Horizontal Pills) -->
-  <g transform="translate(20, 380)">
-    <rect width="80" height="36" rx="18" fill="#2D2926"/>
-    <text x="40" y="23" text-anchor="middle" font-family="Jost" font-size="12" font-weight="500" fill="white">Drive</text>
-
-    <rect x="90" width="80" height="36" rx="18" fill="white" stroke="#E0E0E0"/>
-    <text x="130" y="23" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Security</text>
-
-    <rect x="180" width="80" height="36" rx="18" fill="white" stroke="#E0E0E0"/>
-    <text x="220" y="23" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Safety</text>
-
-    <rect x="270" width="80" height="36" rx="18" fill="white" stroke="#E0E0E0"/>
-    <text x="310" y="23" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Service</text>
-  </g>
-
-  <!-- Content Card (Drive View Example) -->
-  <g transform="translate(20, 440)">
-    <rect width="335" height="260" rx="24" fill="white"/>
-
-    <g transform="translate(80, 80)">
-      <circle r="40" stroke="#F2F2F2" stroke-width="8" fill="none"/>
-      <path d="M-40,0 A40,40 0 1,1 40,0" stroke="#4F5A78" stroke-width="8" fill="none" stroke-linecap="round"/>
-      <text y="5" text-anchor="middle" font-family="Jost" font-size="14" font-weight="600">72%</text>
-      <text y="55" text-anchor="middle" font-family="Jost" font-size="10" fill="#7B8082">Fuel</text>
-    </g>
-
-    <g transform="translate(255, 80)">
-      <circle r="40" stroke="#F2F2F2" stroke-width="8" fill="none"/>
-      <path d="M-40,0 A40,40 0 1,1 25,-30" stroke="#C8D4E1" stroke-width="8" fill="none" stroke-linecap="round"/>
-      <text y="5" text-anchor="middle" font-family="Jost" font-size="14" font-weight="600">88%</text>
-      <text y="55" text-anchor="middle" font-family="Jost" font-size="10" fill="#7B8082">Battery</text>
-    </g>
-
-    <g transform="translate(20, 180)">
-      <text font-family="Jost" font-size="10" fill="#7B8082">ODOMETER</text>
-      <text y="35" font-family="Jost" font-size="32" font-weight="300" fill="#2D2926">12,450 km</text>
-      <rect y="50" width="295" height="4" rx="2" fill="#F2F2F2"/>
-      <rect y="50" width="220" height="4" rx="2" fill="#ACAAAE"/>
-    </g>
-  </g>
-
-  <!-- Sticky Bottom COMMAND Bar (not a category nav) -->
-  <rect y="732" width="375" height="80" fill="white"/>
-  <line x1="0" y1="732" x2="375" y2="732" stroke="#E0E0E0"/>
-
-  <g transform="translate(37, 760)">
-    <circle r="20" fill="#F2F2F2"/> <text y="5" text-anchor="middle" font-size="16">🔒</text>
-    <circle cx="75" r="20" fill="#F2F2F2"/> <text x="75" y="5" text-anchor="middle" font-size="16">🔓</text>
-    <circle cx="150" r="20" fill="#2D2926"/> <text x="150" y="5" text-anchor="middle" font-size="16">⚡</text>
-    <circle cx="225" r="20" fill="#F2F2F2"/> <text x="225" y="5" text-anchor="middle" font-size="16">❄️</text>
-    <circle cx="300" r="20" fill="#F2F2F2"/> <text x="300" y="5" text-anchor="middle" font-size="16">⋮</text>
+  <g fill="#3C3C42">
+    <circle cx="318" cy="768" r="1.6"/>
+    <circle cx="324" cy="768" r="1.6"/>
+    <circle cx="330" cy="768" r="1.6"/>
   </g>
 </svg>

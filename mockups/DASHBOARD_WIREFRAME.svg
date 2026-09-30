@@ -9,7 +9,7 @@
     legible in plan; windows slide vertically, which is invisible from above. See
     notes/CAR_VISUALIZATION_DESIGN.md, "Windows: reported, not drawn".
 
-    Demo state: front-left door ajar, rear-left window open, rear-right tyre low, rear-right door
+    Demo state: front-left door ajar, rear-left window ajar, rear-right tyre low, rear-right door
     not reported. Everything else secure.
   -->
   <rect width="1200" height="800" fill="#F2F2F2"/>
@@ -108,7 +108,7 @@
   </g>
 
   <!-- Roll-up: reads the FULL summary, including parts not visible in this view -->
-  <text x="740" y="566" text-anchor="middle" font-family="Jost" font-size="14" font-weight="500" fill="#CF6679">Front left door ajar • Rear left window open • Rear right tyre low</text>
+  <text x="740" y="566" text-anchor="middle" font-family="Jost" font-size="14" font-weight="500" fill="#CF6679">Front left door ajar • Rear left window ajar • Rear right tyre low</text>
   <text x="740" y="586" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Rear right door not reported • all others secure</text>
 
   <!-- Bottom Gauges Panel -->
