@@ -1,42 +1,93 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 420" width="200" height="420">
   <!--
     Diagnostic view (top-down). Reference art for CarTopDownView.tsx.
+
+    ORIENTATION IS CARRIED BY SILHOUETTE, NOT BY DETAIL.
+    The nose tapers and is rounded; the tail is square and full width. Bonnet runs roughly twice
+    the length of the tailgate, the windscreen is the largest glass area and the backlight the
+    smallest, and the mirrors sit in the front third. An earlier pass drew Volvo's Thor's-hammer
+    headlights and vertical L tail lamps; at dashboard size they collapsed into visual noise, so
+    they are reduced to a wide shallow bar at the nose and a full-width bar at the tail.
+
+    NO DECORATIVE ELEMENT MAY USE A STATUS-ADJACENT HUE.
+    The tail lamps were first drawn in Volvo red and read as a critical status on the rear
+    corners. Every colour in this component is reserved for state; front/rear is communicated by
+    shape and proportion alone. This also keeps the guide's rule that colour is never the only
+    signal.
+
     Literal hex here is for the mockup only. The component reads semantic tokens instead:
-      ok #6B8F71, critical #CF6679, unknown #9A9A9E map to the color-status-* custom
-      properties. (Those names are spelled without their leading dashes on purpose:
-      a double dash is illegal inside an XML comment and breaks the whole document.)
-    Path ids match the PartId union in carParts.ts.
+      ok #6B8F71, critical #CF6679, unknown #9A9A9E map to the color-status-* custom properties.
+      Body #E8E6E3, panel #DEDCD9, glass #C9D3D8 need mode-aware surface tokens - see #3.
+      (Token names are spelled without their leading dashes on purpose: a double dash is illegal
+      inside an XML comment and breaks the whole document.)
+
+    STATUS-BEARING PARTS DRAWN HERE - these eleven ids, and only these, are the PartId union:
+      door-fl, door-fr, door-rl, door-rr    DoorAndLockStatus.{front,rear}{Left,Right}Door
+      tyre-fl, tyre-fr, tyre-rl, tyre-rr    TyresStatus
+      hood                                  DoorAndLockStatus.hood
+      tailgate                              DoorAndLockStatus.tailGate
+      tank-lid                              DoorAndLockStatus.tankLid
+
+    NOT PARTS. Every other shape below is decorative and carries no state: body, nose-bar,
+    tail-bar, windscreen, roof, roof rails, sunroof-glass, backlight, mirrors.
+
+    NOT DRAWN, BY DESIGN:
+      The four door windows and the sunroof (WindowStatus, 5 fields) are reported in the glass
+      rail beside the car, not on it. From directly above a window is not a surface - doors,
+      hood, tailgate and tank lid SWING, which is legible in plan; windows SLIDE vertically,
+      which is not. The sunroof is visible from above but stays in the rail so that all five
+      WindowStatus fields are read in one place. The sunroof glass drawn here is decorative.
+      DoorAndLockStatus.centralLock is a roll-up line, not a drawn part.
+
+    Doors hinge on their FORWARD edge (smaller y). Ajar = rotate outward about that hinge. A
+    left-side door swings outward under a POSITIVE (clockwise) rotation, a right-side door under
+    a negative one - store the sign beside the hinge point in carParts.ts rather than deriving
+    it at render time. Example: door-fl ajar is transform="rotate(35 40 150)".
   -->
   <g id="car-topdown">
-    <!-- shell -->
+    <!-- shell: tapered nose, square full-width tail -->
     <path id="body"
-      d="M100,8 C132,8 154,26 160,60 L166,150 C168,205 168,255 166,306 L160,376 C154,404 132,414 100,414 C68,414 46,404 40,376 L34,306 C32,255 32,205 34,150 L40,60 C46,26 68,8 100,8 Z"
+      d="M100,6 C116,6 130,9 138,17 C152,30 164,54 166,86
+         L168,152 C169,214 169,268 168,308 L167,360 L167,396
+         L166,401 L34,401 L33,396 L33,360 L32,308
+         C31,268 31,214 32,152 L34,86 C36,54 48,30 62,17
+         C70,9 84,6 100,6 Z"
       fill="#E8E6E3" stroke="#ACAAAE" stroke-width="2"/>
 
-    <path id="hood"        d="M56,30 L144,30 L150,80 L50,80 Z"      fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
-    <path id="windshield"  d="M52,84 L148,84 L142,120 L58,120 Z"    fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.5"/>
-    <rect id="roof"   x="50" y="124" width="100" height="168" rx="8" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
-    <rect id="sunroof" x="68" y="142" width="64" height="66" rx="6"  fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.5"/>
-    <path id="rear-window" d="M58,296 L142,296 L148,332 L52,332 Z"  fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.5"/>
-    <path id="tailgate"    d="M52,336 L148,336 L143,390 L57,390 Z"  fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
+    <!-- bonnet: a visible wedge, long. STATUS-BEARING. -->
+    <path id="hood" d="M68,26 L132,26 L153,114 L47,114 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <!-- single bold bar across the nose: unmistakably the front -->
+    <path d="M52,30 L148,30 L150,40 L50,40 Z" fill="#C3C0BB"/>
 
-    <!-- mirrors -->
-    <path d="M36,124 L26,120 L24,130 L35,132 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
-    <path d="M164,124 L174,120 L176,130 L165,132 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.5"/>
+    <!-- greenhouse -->
+    <path d="M46,117 L154,117 L148,172 L52,172 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect x="50" y="174" width="100" height="126" rx="9" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect x="53" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
+    <rect x="141" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
+    <rect x="66" y="184" width="68" height="72" rx="6" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.3"/>
+    <path d="M53,302 L147,302 L150,328 L50,328 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
 
-    <!--
-      Doors. Hinge is the FORWARD edge (smaller y) on every door, matching a real car.
-      Ajar state = rotate outward about that hinge; see door-fl below.
-    -->
-    <path id="door-fl" d="M34,126 L50,126 L50,204 L33,204 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
-    <path id="door-rl" d="M33,208 L50,208 L50,286 L34,286 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
-    <path id="door-fr" d="M166,126 L150,126 L150,204 L167,204 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
-    <path id="door-rr" d="M167,208 L150,208 L150,286 L166,286 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.5"/>
+    <!-- tailgate: short, square. STATUS-BEARING. -->
+    <path id="tailgate" d="M46,332 L154,332 L154,392 L46,392 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path d="M36,380 L164,380 L164,392 L36,392 Z" fill="#C3C0BB"/>
+
+    <!-- mirrors: front third only -->
+    <path d="M33,152 L15,144 L11,160 L32,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path d="M167,152 L185,144 L189,160 L168,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+
+    <!-- doors -->
+    <path id="door-fl" d="M32,150 L49,150 L49,226 L32,226 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-rl" d="M32,230 L49,230 L49,300 L32,300 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-fr" d="M168,150 L151,150 L151,226 L168,226 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-rr" d="M168,230 L151,230 L151,300 L168,300 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+
+    <!-- fuel filler flap, right rear quarter. STATUS-BEARING. -->
+    <rect id="tank-lid" x="152" y="306" width="16" height="22" rx="4" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.3"/>
 
     <!-- tyres -->
-    <rect id="tyre-fl" x="18"  y="72"  width="16" height="48" rx="5" fill="#6B8F71"/>
-    <rect id="tyre-rl" x="18"  y="300" width="16" height="48" rx="5" fill="#6B8F71"/>
-    <rect id="tyre-fr" x="166" y="72"  width="16" height="48" rx="5" fill="#6B8F71"/>
-    <rect id="tyre-rr" x="166" y="300" width="16" height="48" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-fl" x="16"  y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rl" x="16"  y="312" width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-fr" x="167" y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rr" x="167" y="312" width="17" height="58" rx="5" fill="#6B8F71"/>
   </g>
 </svg>

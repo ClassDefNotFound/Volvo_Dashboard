@@ -2,9 +2,12 @@
 
 > **Status:** approved design decision, 2026-09-23. **Revised 2026-09-24:** the hero ships as the
 > **photographic `exteriorImageUrl` render**, not a traced SVG, and **door animation is dropped from
-> the hero** — see *Hero: photo, not vector* below. **Not yet implemented** — this is M4 work and the
-> repo is currently on M0 (`phase-0-hygiene`). Nothing here should be built until M1 lands the
-> semantic token layer (#3), because the diagnostic view consumes `--color-status-*`.
+> the hero** — see *Hero: photo, not vector* below. **Revised 2026-09-30:** window state is
+> **reported in a glass rail beside the car, never drawn on it**, and the top-down silhouette is
+> reshaped to be directional — see *Windows: reported, not drawn* below.
+> **Not yet implemented** — this is M4 work; M0 is closed and merged to `main`. Nothing here should
+> be built until M1 lands the semantic token layer (#3), because the diagnostic view consumes
+> `--color-status-*` including the **unknown** token that #3 now carries.
 >
 > Supersedes pillar 3 of `notes/IMPLEMENTATION_GUIDE.md` ("inline top-down car outline"). Fold the
 > decisions below into that file's *Decisions of Record* when this work starts.
@@ -32,8 +35,9 @@ visible at once** — which is why every OEM uses top-down specifically for lock
 
 **Intended outcome:** two purpose-built views instead of one compromised one. A three-quarter
 **hero** that looks like the user's actual car, and the **top-down diagnostic** schematic, with a
-toggle between them. Doors, windows, hood and tailgate animate open from API state **in the
-diagnostic view**; the hero conveys state through badges. This absorbs into M4 without adding a
+toggle between them. Doors, hood, tailgate and tank lid animate open from API state **in the
+diagnostic view**; window state is reported in the glass rail rather than animated (see *Windows:
+reported, not drawn*); the hero conveys state through badges. This absorbs into M4 without adding a
 milestone, and preserves every accessibility, token and testability decision already recorded in
 `notes/IMPLEMENTATION_GUIDE.md`.
 
@@ -60,14 +64,75 @@ Consequences to design around:
   set `selectedCategory` now happens only in the diagnostic view; the hero's badges can carry that
   affordance instead, since they are ordinary DOM buttons positioned over the image.
 
-`mockups/CAR_HERO_WIREFRAME.svg` (auto-traced) is retained as a **rejected alternative**, not a build
-target. It is still the reference if the hero ever needs to be model-agnostic or themeable.
+`mockups/CAR_HERO_WIREFRAME.svg` (auto-traced) was retained for a week as a rejected alternative and
+has since been **deleted** — it was never a build target, and keeping a rejected artefact around
+invites someone to build from it. The Figma file still holds the frame *Desktop — Hero, TRACED
+VECTOR (rejected alternative)* if the reasoning ever needs re-reading.
 
 Full 3D (React Three Fiber + glTF) was considered and declined for now: its blocker is asset
 licensing, not code — it needs a rigged `.glb` with separately named door meshes, which no amount of
 coding progress unblocks. It also costs ~150–200 kB gzipped against a 155 kB baseline, needs a
 parallel hidden-DOM accessibility tree because `<canvas>` has no DOM, and contradicts three decisions
 of record. If it's revisited, it belongs after M6 with the SVG car as the degradation target.
+
+### Windows: reported, not drawn (decided 2026-09-30)
+
+The top-down view could not distinguish a window from a door — both are the same flank strip. The
+instinct was to go more 3D so the two could be told apart. The research says otherwise.
+
+**No mainstream OEM app draws per-window state on the car graphic.** BMW consolidates everything
+into a single "all doors and windows closed" statement in a DOORS & WINDOWS menu. Tesla's overhead
+view shows doors, trunk and frunk; windows are a separate control and are never drawn open.
+Rivian's top-down covers locks, trunk, frunk and lighting. Volvo's own app uses a doors view plus
+exterior-status notifications that *name* what is open.
+
+The reason is structural, and it is the rule to remember: **doors, hood, tailgate and tank lid
+SWING** — rotation is legible on a plan view. **Windows SLIDE vertically** — that motion is
+invisible from directly above. From above, a window is not a surface at all.
+
+**Decision: the car owns parts that swing; a glass rail beside it owns the parts that slide.** All
+five `WindowStatus` fields (four door windows plus sunroof) live in the rail. The sunroof *is*
+visible from above, but it stays in the rail so all five window states are read in one place rather
+than split across two mechanisms. The sunroof drawn on the plan is decorative.
+
+This also makes the rail items ordinary DOM buttons with real labels and a clean tab order, which
+is worth more than it sounds given that #15 makes car accessibility the highest-value test in M4.
+
+Two alternatives were mocked and rejected (all three are in Figma, *Volvo Dashboard* page, below
+*Nordic Horizon*):
+
+- **Tilted isometric.** Gives each door a face with a glass band above it, genuinely unambiguous —
+  for the near flank. No single projection shows all four sides, so two doors and two windows sit
+  behind the roof and still need a list. You would build the isometric *and* ship the rail. This is
+  the same "can't see all sides" reasoning that already rejected a three-quarter hero, reappearing
+  in the view whose entire job is showing everything at once.
+- **Plan with fold-out flanks.** Genuinely solves it — all four doors and all four windows,
+  symmetric, nothing occluded. Rejected because it reads as an engineering diagram rather than a
+  car, and the fold-out convention has to be learned. Expensive for a two-second glance. Worth
+  revisiting if the rail turns out to be hard to map back to physical positions.
+
+#### Two rules that came out of the mockups
+
+**No decorative element may use a status-adjacent hue.** Volvo's vertical L tail lamps drawn in red
+read as a *critical status on the rear corners*. Every colour in this component is reserved for
+state. This is the same principle as the existing "colour is never the only signal" rule, pointed
+the other way: not only must state carry more than colour, decoration must carry none.
+
+**Orientation comes from silhouette, not detail.** The first reshape added Thor's-hammer headlights,
+vertical tail lamps, roof rails and a grille; at dashboard size they collapsed into visual noise
+that read as rendering artefacts. What actually works is a tapered rounded nose against a square
+full-width tail, a bonnet about twice the length of the tailgate, a windscreen clearly larger than
+the backlight, and mirrors in the front third.
+
+#### Part list correction
+
+Checking the shapes against `shared/types/api.ts` turned up parts the earlier draft missed.
+`DoorAndLockStatus` carries **`tankLid`** (the fuel filler flap, right rear quarter on this model)
+alongside `hood` and `tailGate`, and `centralLock`. So the diagnostic view's status-bearing parts
+are these eleven — four doors, four tyres, `hood`, `tailgate`, `tank-lid` — and **not** the eleven
+named in the earlier draft, which counted the sunroof and omitted the tank lid. `centralLock` is a
+roll-up line, not a drawn part. The `PartId` union follows this list exactly; every other shape in
+`mockups/CAR_TOPDOWN_WIREFRAME.svg` is decorative and carries no state.
 
 > Per `CLAUDE.md` interaction mode, this is a build guide for the user to implement, with Claude
 > reviewing. Steps are written as what to build and what to watch for, not as Claude's task list.
@@ -83,9 +148,10 @@ of record. If it's revisited, it belongs after M6 with the SVG car as the degrad
 | Purpose | Identity — "this is *my* car" | Triage — "what's wrong, and where" |
 | Medium | `<img>` of `images.exteriorImageUrl` | Inline SVG, semantic `PartId` paths |
 | Status shown as | Badge pinned over the image | Flat fill, green/red |
-| Animates | No | Doors/hood/tailgate swing, windows slide |
+| Animates | No | Doors, hood, tailgate and tank lid swing |
 | Interactive parts | Badges only | Every part is a button |
-| Parts visible | FL/FR doors, hood, FL/FR tyres, windscreen, front lights | All 4 doors, all 4 tyres, tailgate, hood, sunroof |
+| Parts visible | FL/FR doors, hood, FL/FR tyres, windscreen, front lights | 4 doors, 4 tyres, tailgate, hood, tank lid |
+| Window state | Glass rail | Glass rail — never on the car |
 | Default | ✅ on load | — |
 
 **This is an amendment to pillar 3 of the guide.** "React changes individual `<path>` fills based on
@@ -97,8 +163,9 @@ the roll-up line carry it too, consistent with the existing status-colour decisi
 
 1. **View toggle** — a segmented control (`role="radiogroup"`, two radios; *not* a tabs primitive —
    these aren't tab panels). Plain user state defaulting to `'hero'`.
-2. **Part animation from state** — **diagnostic view only**: doors/hood/tailgate swing on a CSS
-   transform; windows slide. The hero is a still image and does not animate.
+2. **Part animation from state** — **diagnostic view only**: doors, hood, tailgate and tank lid
+   swing on a CSS transform. Windows do not animate because they are not drawn — they are reported
+   in the glass rail. The hero is a still image and does not animate.
 3. **Part click → category** — clicking a part sets `selectedCategory`. In the diagnostic view that
    is every part; in the hero it is the badges.
 4. **Pointer-parallax tilt** — a few degrees of rotation following the pointer, so the hero feels
@@ -131,7 +198,8 @@ folded into OK. A part in unknown state renders with the unknown treatment in bo
 | `carParts.ts` | `type PartId` union; `PART_CATEGORY: Record<PartId, CategoryId>`; `VIEW_PARTS: Record<CarView, readonly PartId[]>`; `PART_LABELS` for `aria-label` construction |
 | `InteractiveCar.tsx` | Owns `view` state, renders the toggle, the active view, and the roll-up line. Maps summary → per-part status. |
 | `CarHeroView.tsx` | `<img>` of `exteriorImageUrl` plus absolutely-positioned badge buttons. Takes the image URL + per-part status. Falls back to the diagnostic view on image error. |
-| `CarTopDownView.tsx` | Top-down inline SVG, evolved from the existing wireframe path data. |
+| `CarTopDownView.tsx` | Top-down inline SVG, evolved from `mockups/CAR_TOPDOWN_WIREFRAME.svg`. |
+| `GlassRail.tsx` | The five `WindowStatus` slots (4 door windows + sunroof) as DOM buttons beside the car. |
 | `CarPart.tsx` | One interactive part: `<button>` wrapping the `<path>`, `aria-label`, status→visual mapping. |
 | `useParallaxTilt.ts` | Pointer-tilt hook. Returns a ref. |
 
@@ -144,10 +212,9 @@ to view membership.
 - `notes/IMPLEMENTATION_GUIDE.md` — amend pillar 3 (fill convention is per-view); rewrite the
   "Interactive SVG Car" section for two views; amend M4 build-order step 3.
 - `mockups/DASHBOARD_WIREFRAME.svg` — replace the dashed capsule with the diagnostic-view art.
-- `mockups/CAR_HERO_WIREFRAME.svg` — auto-traced three-quarter vector. **Rejected alternative**, kept
-  for the record; not a build target. Its builder lives only in the session scratchpad, so treat the
-  committed SVG as the artefact.
-- GitHub #15 — extend scope (see Milestone impact).
+- `mockups/CAR_HERO_WIREFRAME.svg` — **deleted** (2026-09-30). Auto-traced three-quarter vector,
+  rejected and never a build target.
+- GitHub #15 — extended to cover view switching, per-view part sets and the hidden-part roll-up.
 
 ### Reused, not rebuilt
 
@@ -172,7 +239,8 @@ The guide's existing rule holds: **hardcoded states first, commit that, then wir
    real door cut-lines. Named paths per `PartId`. Hardcoded states.
 3. **`CarPart.tsx` + status visuals** — the button/label/keyboard contract in one place so both
    views inherit it. Verify with keyboard and a screen reader before there are two views to debug.
-4. **Door/window animation** — diagnostic view only, CSS transforms. Commit with hardcoded states.
+4. **Swing-part animation** — diagnostic view only, CSS transforms, for doors, hood, tailgate and
+   tank lid. No window animation: windows are not drawn. Commit with hardcoded states.
 5. **Hero view** — `<img>` of `exteriorImageUrl` with fraction-anchored badge buttons over it, plus
    the fallback-to-diagnostic path on image error. No art task: the render *is* the asset.
 6. **View toggle + roll-up** — including the hidden-part affordance.
@@ -289,13 +357,17 @@ changes what it renders. The 2026-09-24 revision **removes work** rather than ad
   hero part buttons — the hero has badges, not parts.
 - **No hero-art issue.** An earlier draft proposed one at `size:L`; choosing the photographic hero
   deletes it outright. That was the largest single task in this plan and the likeliest to slip.
-- **New issue: hero image loading** (`size:S`) — fraction-anchored badge overlay, `onError` fallback
+- **#28 — hero image loading** (`size:S`) — fraction-anchored badge overlay, `onError` fallback
   to the diagnostic view, and a decision on whether to proxy (see the `fetch`-vs-`axios` note).
-- **New issue: `useParallaxTilt`** (`learning:react`, `size:S`) — small, self-contained, and a good
-  vehicle for the ref-plus-CSS-custom-property pattern.
-- **M1, M2, M3 unchanged.** Nothing here touches tokens, the data layer or the registry. The status
-  tokens this needs are already in #3's scope; confirm #3 includes an **unknown**-state token
-  alongside `ok`/`warn`/`critical`, and add it there if not.
+  Filed 2026-09-30.
+- **#29 — `useParallaxTilt`** (`learning:react`, `size:S`) — small, self-contained, and a good
+  vehicle for the ref-plus-CSS-custom-property pattern. Filed 2026-09-30.
+- **M1 changed after all.** The earlier draft said M1 was untouched and only asked to *confirm* #3
+  carried an unknown-state token. It did not. #3 now carries `--volvo-slate` plus the **unknown**
+  status token, and the three `--volvo-shell-*` vehicle-surface primitives the top-down car needs;
+  #7 carries the matching `--status-unknown` and `--vehicle-*` names. Those surfaces are the one
+  group that genuinely must flip with mode — the committed hex is Nordic Light, and a light-grey
+  car body on a dark background reads as a bug. **M2 and M3 remain unchanged.**
 - **M6** picks up the deferred category→view auto-switch and an optional crossfade.
 - **`mockups/` and the guide** are updated as part of this work, not deferred to #22 — #22 reconciles
   the guide against `main` for M0 and closes before any of this starts.
