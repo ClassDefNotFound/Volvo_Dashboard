@@ -31,6 +31,13 @@
     NOT PARTS. Every other shape below is decorative and carries no state: body, nose-bar,
     tail-bar, windscreen, roof, roof rails, sunroof-glass, backlight, mirrors.
 
+    SMALL PARTS TAKE A STATUS FILL; LARGE PANELS TAKE A STATUS STROKE.
+    Doors, tyres and the tank lid are small enough to fill. Filling the hood and the tailgate
+    turned the whole car into a green slab and drowned out the one door that was actually ajar -
+    the opposite of what a glanceable view is for. They keep the neutral panel surface and carry
+    state as a 3px stroke instead. The test is whether a filled secure state would out-weigh the
+    exceptions it exists to make visible.
+
     NOT DRAWN, BY DESIGN:
       The four door windows and the sunroof (WindowStatus, 5 fields) are reported in the glass
       rail beside the car, not on it. From directly above a window is not a surface - doors,
@@ -55,7 +62,7 @@
       fill="#E8E6E3" stroke="#ACAAAE" stroke-width="2"/>
 
     <!-- bonnet: a visible wedge, long. STATUS-BEARING. -->
-    <path id="hood" d="M68,26 L132,26 L153,114 L47,114 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="hood" d="M68,26 L132,26 L153,114 L47,114 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
     <!-- single bold bar across the nose: unmistakably the front -->
     <path d="M52,30 L148,30 L150,40 L50,40 Z" fill="#C3C0BB"/>
 
@@ -68,7 +75,7 @@
     <path d="M53,302 L147,302 L150,328 L50,328 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
 
     <!-- tailgate: short, square. STATUS-BEARING. -->
-    <path id="tailgate" d="M46,332 L154,332 L154,392 L46,392 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="tailgate" d="M46,332 L154,332 L154,392 L46,392 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
     <path d="M36,380 L164,380 L164,392 L36,392 Z" fill="#C3C0BB"/>
 
     <!-- mirrors: front third only -->

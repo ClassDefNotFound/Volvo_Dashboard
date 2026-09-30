@@ -1,7 +1,19 @@
 <svg width="375" height="812" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
+  <!--
+    Mobile layout. Same diagnostic (top-down) car as the desktop wireframe; geometry and the
+    PartId list live in mockups/CAR_TOPDOWN_WIREFRAME.svg.
+
+    Windows are NOT drawn on the car - all five WindowStatus fields sit in the GLASS rail beneath
+    it. See notes/CAR_VISUALIZATION_DESIGN.md, "Windows: reported, not drawn".
+
+    Categories are a horizontal PILL ROW; the sticky bottom bar is for COMMANDS. Two different
+    components - do not merge them into a bottom nav.
+
+    Demo state matches the desktop wireframe: front-left door ajar, rear-left window open,
+    rear-right tyre low, rear-right door not reported.
+  -->
   <rect width="375" height="812" fill="#F2F2F2"/>
-  
+
   <!-- Header / AppBar -->
   <rect width="375" height="60" fill="white"/>
   <text x="20" y="38" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">VOLVO</text>
@@ -9,29 +21,80 @@
   <text x="307" y="35" text-anchor="middle" font-family="Jost" font-size="12" fill="#2D2926">VIN: YV1..▾</text>
   <line x1="0" y1="60" x2="375" y2="60" stroke="#E0E0E0"/>
 
-  <!-- Hero Section (Car Blueprint) -->
-  <g transform="translate(187.5, 220) scale(0.6)">
-    <!-- Main Car Body -->
-    <path d="M0,-250 C-50,-250 -70,-220 -80,-150 L-80,150 C-70,220 -50,250 0,250 C50,250 70,220 80,150 L80,-150 C70,-220 50,-250 0,-250 Z" stroke="#ACAAAE" stroke-width="3" fill="none" stroke-dasharray="4 4"/>
-    
-    <!-- Status Overlays -->
-    <path d="M-80,-120 L-85,-120 L-85,-20 L-80,-20" stroke="#6B8F71" stroke-width="8" fill="none"/>
-    <path d="M80,-120 L85,-120 L85,-20 L80,-20" stroke="#6B8F71" stroke-width="8" fill="none"/>
-    
-    <text x="0" y="20" text-anchor="middle" font-family="Jost" font-size="24" font-weight="500" fill="#6B8F71">SECURE</text>
+  <!-- Hero: diagnostic view -->
+  <g transform="translate(133.5, 66) scale(0.54)">
+    <path d="M100,6 C116,6 130,9 138,17 C152,30 164,54 166,86
+             L168,152 C169,214 169,268 168,308 L167,360 L167,396
+             L166,401 L34,401 L33,396 L33,360 L32,308
+             C31,268 31,214 32,152 L34,86 C36,54 48,30 62,17
+             C70,9 84,6 100,6 Z"
+          fill="#E8E6E3" stroke="#ACAAAE" stroke-width="2"/>
+    <path id="hood" d="M68,26 L132,26 L153,114 L47,114 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
+    <path d="M52,30 L148,30 L150,40 L50,40 Z" fill="#C3C0BB"/>
+    <path d="M46,117 L154,117 L148,172 L52,172 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect x="50" y="174" width="100" height="126" rx="9" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect x="53" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
+    <rect x="141" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
+    <rect x="66" y="184" width="68" height="72" rx="6" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.3"/>
+    <path d="M53,302 L147,302 L150,328 L50,328 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="tailgate" d="M46,332 L154,332 L154,392 L46,392 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
+    <path d="M36,380 L164,380 L164,392 L36,392 Z" fill="#C3C0BB"/>
+    <path d="M33,152 L15,144 L11,160 L32,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path d="M167,152 L185,144 L189,160 L168,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-fl" d="M32,150 L49,150 L49,226 L32,226 Z" fill="#CF6679" stroke="#ACAAAE" stroke-width="1.4" transform="rotate(35 40 150)"/>
+    <path id="door-rl" d="M32,230 L49,230 L49,300 L32,300 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-fr" d="M168,150 L151,150 L151,226 L168,226 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-rr" d="M168,230 L151,230 L151,300 L168,300 Z" fill="#9A9A9E" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect id="tank-lid" x="152" y="306" width="16" height="22" rx="4" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.3"/>
+    <rect id="tyre-fl" x="16"  y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rl" x="16"  y="312" width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-fr" x="167" y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rr" x="167" y="312" width="17" height="58" rx="5" fill="#CF6679"/>
   </g>
+
+  <!-- GLASS rail -->
+  <g transform="translate(18, 300)">
+    <g>
+      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
+      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
+      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">FL</text>
+    </g>
+    <g transform="translate(69, 0)">
+      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
+      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
+      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">FR</text>
+    </g>
+    <g transform="translate(138, 0)">
+      <rect width="63" height="38" rx="9" fill="white" stroke="#CF6679"/>
+      <rect x="10" y="9" width="20" height="7" rx="3" fill="#CF6679"/>
+      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">RL</text>
+    </g>
+    <g transform="translate(207, 0)">
+      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
+      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
+      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">RR</text>
+    </g>
+    <g transform="translate(276, 0)">
+      <rect width="63" height="38" rx="9" fill="white" stroke="#E0E0E0"/>
+      <rect x="10" y="9" width="20" height="7" rx="3" fill="#6B8F71"/>
+      <text x="10" y="31" font-family="Jost" font-size="11" fill="#2D2926">ROOF</text>
+    </g>
+  </g>
+
+  <!-- Roll-up: full summary, not just what is visible -->
+  <text x="187.5" y="358" text-anchor="middle" font-family="Jost" font-size="12" font-weight="500" fill="#CF6679">FL door ajar • RL window open • RR tyre low</text>
 
   <!-- Category Selector (Horizontal Pills) -->
   <g transform="translate(20, 380)">
     <rect width="80" height="36" rx="18" fill="#2D2926"/>
     <text x="40" y="23" text-anchor="middle" font-family="Jost" font-size="12" font-weight="500" fill="white">Drive</text>
-    
+
     <rect x="90" width="80" height="36" rx="18" fill="white" stroke="#E0E0E0"/>
     <text x="130" y="23" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Security</text>
-    
+
     <rect x="180" width="80" height="36" rx="18" fill="white" stroke="#E0E0E0"/>
     <text x="220" y="23" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Safety</text>
-    
+
     <rect x="270" width="80" height="36" rx="18" fill="white" stroke="#E0E0E0"/>
     <text x="310" y="23" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Service</text>
   </g>
@@ -39,15 +102,14 @@
   <!-- Content Card (Drive View Example) -->
   <g transform="translate(20, 440)">
     <rect width="335" height="260" rx="24" fill="white"/>
-    
-    <!-- Gauges Row -->
+
     <g transform="translate(80, 80)">
       <circle r="40" stroke="#F2F2F2" stroke-width="8" fill="none"/>
       <path d="M-40,0 A40,40 0 1,1 40,0" stroke="#4F5A78" stroke-width="8" fill="none" stroke-linecap="round"/>
       <text y="5" text-anchor="middle" font-family="Jost" font-size="14" font-weight="600">72%</text>
       <text y="55" text-anchor="middle" font-family="Jost" font-size="10" fill="#7B8082">Fuel</text>
     </g>
-    
+
     <g transform="translate(255, 80)">
       <circle r="40" stroke="#F2F2F2" stroke-width="8" fill="none"/>
       <path d="M-40,0 A40,40 0 1,1 25,-30" stroke="#C8D4E1" stroke-width="8" fill="none" stroke-linecap="round"/>
@@ -55,7 +117,6 @@
       <text y="55" text-anchor="middle" font-family="Jost" font-size="10" fill="#7B8082">Battery</text>
     </g>
 
-    <!-- Odometer Row -->
     <g transform="translate(20, 180)">
       <text font-family="Jost" font-size="10" fill="#7B8082">ODOMETER</text>
       <text y="35" font-family="Jost" font-size="32" font-weight="300" fill="#2D2926">12,450 km</text>
@@ -64,12 +125,11 @@
     </g>
   </g>
 
-  <!-- Sticky Bottom Command Bar -->
+  <!-- Sticky Bottom COMMAND Bar (not a category nav) -->
   <rect y="732" width="375" height="80" fill="white"/>
   <line x1="0" y1="732" x2="375" y2="732" stroke="#E0E0E0"/>
-  
+
   <g transform="translate(37, 760)">
-    <!-- Command Icons (Placeholders) -->
     <circle r="20" fill="#F2F2F2"/> <text y="5" text-anchor="middle" font-size="16">🔒</text>
     <circle cx="75" r="20" fill="#F2F2F2"/> <text x="75" y="5" text-anchor="middle" font-size="16">🔓</text>
     <circle cx="150" r="20" fill="#2D2926"/> <text x="150" y="5" text-anchor="middle" font-size="16">⚡</text>

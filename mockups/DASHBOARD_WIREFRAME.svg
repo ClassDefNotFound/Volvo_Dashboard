@@ -1,79 +1,134 @@
 <svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
+  <!--
+    Desktop layout. The car is the diagnostic (top-down) view from
+    mockups/CAR_TOPDOWN_WIREFRAME.svg - that file is the source of truth for the geometry and the
+    PartId list; this one only places it.
+
+    Windows are NOT drawn on the car. All five WindowStatus fields (four door windows + sunroof)
+    are reported in the GLASS rail beneath it. Doors, hood, tailgate and tank lid swing, which is
+    legible in plan; windows slide vertically, which is invisible from above. See
+    notes/CAR_VISUALIZATION_DESIGN.md, "Windows: reported, not drawn".
+
+    Demo state: front-left door ajar, rear-left window open, rear-right tyre low, rear-right door
+    not reported. Everything else secure.
+  -->
   <rect width="1200" height="800" fill="#F2F2F2"/>
-  
+
   <!-- Sidebar (Glassmorphism effect) -->
   <rect x="0" y="0" width="280" height="800" fill="white" fill-opacity="0.8"/>
   <line x1="280" y1="0" x2="280" y2="800" stroke="#E0E0E0" stroke-width="1"/>
-  
-  <!-- Logo placeholder -->
+
   <text x="40" y="50" font-family="Jost, sans-serif" font-size="24" font-weight="600" fill="#2D2926">VOLVO</text>
-  
+
   <!-- Navigation Links -->
   <g transform="translate(40, 120)">
     <text x="0" y="0" font-family="Jost" font-size="16" font-weight="600" fill="#2D2926">DRIVE</text>
     <rect x="-10" y="15" width="250" height="40" rx="8" fill="#C8D4E1" fill-opacity="0.3"/>
     <text x="10" y="40" font-family="Jost" font-size="14" fill="#4F5A78">Status &amp; Range</text>
-    
+
     <text x="0" y="90" font-family="Jost" font-size="16" fill="#7B8082">SECURITY</text>
     <text x="0" y="140" font-family="Jost" font-size="16" fill="#7B8082">SAFETY</text>
     <text x="0" y="190" font-family="Jost" font-size="16" fill="#7B8082">SERVICE</text>
   </g>
-  
+
   <!-- Vehicle Info Card (Bottom of sidebar) -->
   <g transform="translate(20, 600)">
     <rect width="240" height="180" rx="16" fill="#FFFFFF" stroke="#E0E0E0"/>
-    <text x="20" y="40" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">XC60 Recharge</text>
-    <text x="20" y="65" font-family="Jost" font-size="14" fill="#7B8082">2023 • Crystal White</text>
+    <text x="20" y="40" font-family="Jost" font-size="18" font-weight="600" fill="#2D2926">XC60 Recharge T8</text>
+    <text x="20" y="65" font-family="Jost" font-size="14" fill="#7B8082">2021 • Onyx Black</text>
     <rect x="20" y="90" width="200" height="70" rx="8" fill="#F2F2F2"/>
     <text x="120" y="130" text-anchor="middle" font-family="Jost" font-size="12" fill="#ACAAAE">Exterior Image Placeholder</text>
   </g>
-  
+
   <!-- Main Viewport Header -->
   <text x="320" y="50" font-family="Jost" font-size="20" font-weight="500" fill="#2D2926">Vehicle Status</text>
   <rect x="1050" y="30" width="120" height="36" rx="18" fill="#2D2926"/>
   <text x="1110" y="54" text-anchor="middle" font-family="Jost" font-size="14" fill="white">Logout</text>
 
-  <!-- Central Car Blueprint -->
-  <g transform="translate(450, 150)">
-    <!-- Main Car Body Path (Stylized) -->
-    <path d="M150,50 C100,50 80,80 70,150 L70,450 C80,520 100,550 150,550 C200,550 220,520 230,450 L230,150 C220,80 200,50 150,50 Z" fill="none" stroke="#ACAAAE" stroke-width="2" stroke-dasharray="4 4"/>
-    
-    <!-- Windshield -->
-    <path d="M100,160 Q150,140 200,160" stroke="#ACAAAE" stroke-width="2" fill="none"/>
-    
-    <!-- Status Overlays: Doors (Green = Secure) -->
-    <path id="door-fl" d="M70,180 L65,180 L65,280 L70,280" stroke="#6B8F71" stroke-width="6" fill="none"/>
-    <path id="door-fr" d="M230,180 L235,180 L235,280 L230,280" stroke="#6B8F71" stroke-width="6" fill="none"/>
-    
-    <!-- Status Overlays: Tyre Warning (Red = Low Pressure) -->
-    <rect x="60" y="460" width="10" height="40" rx="2" fill="#CF6679"/>
-    <text x="40" y="485" text-anchor="end" font-family="Jost" font-size="12" fill="#CF6679">Low Pressure</text>
-    
-    <text x="150" y="320" text-anchor="middle" font-family="Jost" font-size="14" font-weight="500" fill="#6B8F71">● All Systems Secure</text>
+  <!-- Diagnostic view: the car owns the parts that SWING -->
+  <g transform="translate(645, 86) scale(0.95)">
+    <path d="M100,6 C116,6 130,9 138,17 C152,30 164,54 166,86
+             L168,152 C169,214 169,268 168,308 L167,360 L167,396
+             L166,401 L34,401 L33,396 L33,360 L32,308
+             C31,268 31,214 32,152 L34,86 C36,54 48,30 62,17
+             C70,9 84,6 100,6 Z"
+          fill="#E8E6E3" stroke="#ACAAAE" stroke-width="2"/>
+    <path id="hood" d="M68,26 L132,26 L153,114 L47,114 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
+    <path d="M52,30 L148,30 L150,40 L50,40 Z" fill="#C3C0BB"/>
+    <path d="M46,117 L154,117 L148,172 L52,172 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect x="50" y="174" width="100" height="126" rx="9" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect x="53" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
+    <rect x="141" y="180" width="6" height="114" rx="3" fill="#CFCCC7"/>
+    <rect x="66" y="184" width="68" height="72" rx="6" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.3"/>
+    <path d="M53,302 L147,302 L150,328 L50,328 Z" fill="#C9D3D8" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="tailgate" d="M46,332 L154,332 L154,392 L46,392 Z" fill="#DEDCD9" stroke="#6B8F71" stroke-width="3"/>
+    <path d="M36,380 L164,380 L164,392 L36,392 Z" fill="#C3C0BB"/>
+    <path d="M33,152 L15,144 L11,160 L32,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path d="M167,152 L185,144 L189,160 L168,166 Z" fill="#DEDCD9" stroke="#ACAAAE" stroke-width="1.4"/>
+    <!-- front-left door ajar: rotate outward about the FORWARD edge -->
+    <path id="door-fl" d="M32,150 L49,150 L49,226 L32,226 Z" fill="#CF6679" stroke="#ACAAAE" stroke-width="1.4" transform="rotate(35 40 150)"/>
+    <path id="door-rl" d="M32,230 L49,230 L49,300 L32,300 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-fr" d="M168,150 L151,150 L151,226 L168,226 Z" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.4"/>
+    <path id="door-rr" d="M168,230 L151,230 L151,300 L168,300 Z" fill="#9A9A9E" stroke="#ACAAAE" stroke-width="1.4"/>
+    <rect id="tank-lid" x="152" y="306" width="16" height="22" rx="4" fill="#6B8F71" stroke="#ACAAAE" stroke-width="1.3"/>
+    <rect id="tyre-fl" x="16"  y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rl" x="16"  y="312" width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-fr" x="167" y="62"  width="17" height="58" rx="5" fill="#6B8F71"/>
+    <rect id="tyre-rr" x="167" y="312" width="17" height="58" rx="5" fill="#CF6679"/>
   </g>
+
+  <!-- GLASS rail: the parts that SLIDE. Five slots = five WindowStatus fields. -->
+  <g transform="translate(544, 488)">
+    <text x="0" y="-8" font-family="Jost" font-size="11" font-weight="600" fill="#7B8082">GLASS</text>
+    <g>
+      <rect width="72" height="48" rx="10" fill="white" stroke="#E0E0E0"/>
+      <rect x="12" y="12" width="24" height="8" rx="3" fill="#6B8F71"/>
+      <text x="12" y="38" font-family="Jost" font-size="12" fill="#2D2926">FL</text>
+    </g>
+    <g transform="translate(80, 0)">
+      <rect width="72" height="48" rx="10" fill="white" stroke="#E0E0E0"/>
+      <rect x="12" y="12" width="24" height="8" rx="3" fill="#6B8F71"/>
+      <text x="12" y="38" font-family="Jost" font-size="12" fill="#2D2926">FR</text>
+    </g>
+    <g transform="translate(160, 0)">
+      <rect width="72" height="48" rx="10" fill="white" stroke="#CF6679"/>
+      <rect x="12" y="12" width="24" height="8" rx="3" fill="#CF6679"/>
+      <text x="12" y="38" font-family="Jost" font-size="12" fill="#2D2926">RL</text>
+    </g>
+    <g transform="translate(240, 0)">
+      <rect width="72" height="48" rx="10" fill="white" stroke="#E0E0E0"/>
+      <rect x="12" y="12" width="24" height="8" rx="3" fill="#6B8F71"/>
+      <text x="12" y="38" font-family="Jost" font-size="12" fill="#2D2926">RR</text>
+    </g>
+    <g transform="translate(320, 0)">
+      <rect width="72" height="48" rx="10" fill="white" stroke="#E0E0E0"/>
+      <rect x="12" y="12" width="24" height="8" rx="3" fill="#6B8F71"/>
+      <text x="12" y="38" font-family="Jost" font-size="12" fill="#2D2926">ROOF</text>
+    </g>
+  </g>
+
+  <!-- Roll-up: reads the FULL summary, including parts not visible in this view -->
+  <text x="740" y="566" text-anchor="middle" font-family="Jost" font-size="14" font-weight="500" fill="#CF6679">Front left door ajar • Rear left window open • Rear right tyre low</text>
+  <text x="740" y="586" text-anchor="middle" font-family="Jost" font-size="12" fill="#7B8082">Rear right door not reported • all others secure</text>
 
   <!-- Bottom Gauges Panel -->
   <g transform="translate(320, 600)">
     <rect width="840" height="180" rx="24" fill="white" fill-opacity="0.6"/>
-    
-    <!-- Fuel Gauge -->
+
     <g transform="translate(150, 100)">
       <path d="M-60,0 A60,60 0 0,1 60,0" fill="none" stroke="#E0E0E0" stroke-width="12" stroke-linecap="round"/>
       <path d="M-60,0 A60,60 0 0,1 20,-56" fill="none" stroke="#4F5A78" stroke-width="12" stroke-linecap="round"/>
       <text x="0" y="-10" text-anchor="middle" font-family="Jost" font-size="24" font-weight="600" fill="#2D2926">72%</text>
       <text x="0" y="25" text-anchor="middle" font-family="Jost" font-size="14" fill="#7B8082">Fuel Level</text>
     </g>
-    
-    <!-- Battery Gauge -->
+
     <g transform="translate(420, 100)">
       <path d="M-60,0 A60,60 0 0,1 60,0" fill="none" stroke="#E0E0E0" stroke-width="12" stroke-linecap="round"/>
       <path d="M-60,0 A60,60 0 0,1 50,-30" fill="none" stroke="#C8D4E1" stroke-width="12" stroke-linecap="round"/>
       <text x="0" y="-10" text-anchor="middle" font-family="Jost" font-size="24" font-weight="600" fill="#2D2926">88%</text>
       <text x="0" y="25" text-anchor="middle" font-family="Jost" font-size="14" fill="#7B8082">Battery Charge</text>
     </g>
-    
-    <!-- Odometer -->
+
     <g transform="translate(650, 60)">
       <text x="0" y="20" font-family="Jost" font-size="14" fill="#7B8082">ODOMETER</text>
       <text x="0" y="60" font-family="Jost" font-size="42" font-weight="300" fill="#2D2926">12,450 km</text>
