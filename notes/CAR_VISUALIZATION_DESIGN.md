@@ -82,11 +82,40 @@ attached rather than only a paragraph. Worth noting that the first attempt used 
 and was visibly wrong — it cut straight through the side window. The A-pillar rakes back, so a
 door is not a quad, and that is the kind of thing only a render tells you.
 
+##### How multiple parts compose — one overlay, not one file per scenario
+
+The obvious worry is scenario count: if the front-left door *and* its window are both ajar, is
+that a third SVG? No — and the combinatorial version was never on the table. Eleven parts at two
+states each is 2048 files.
+
+**`mockups/HERO_PARTS_OVERLAY.svg` is the shape this takes.** One overlay holds every part as a
+named polygon; the component styles whichever parts need attention and leaves the rest with no
+stroke and no fill. Identical to how `CAR_TOPDOWN_WIREFRAME.svg` already works, so there is one
+mental model for both views rather than two.
+
+Two properties that make it behave:
+
+- **The photo is not in the overlay.** It is an inline `<svg>` over an `<img src={exteriorImageUrl}>`,
+  both sized to the same box. The overlay stays a few KB and stays diffable in review, the photo
+  stays the live API image rather than a baked-in asset that drifts from the real car, and
+  changing vehicle or angle replaces the photo without touching the overlay.
+- **Parts tile, they do not nest.** A door and its window share the beltline edge instead of the
+  window sitting inside the door. "Door ajar" lights the lower panel, "window ajar" lights the
+  glass, and both lights the whole door as one continuous shape — with no overlap case to
+  special-case. The third panel of the exploration file shows this.
+
+A note on file size, since the mockups embed the render for viewing: **WebP, not PNG.** 48 KB
+against 303 KB for the same pixels, and the exploration defines the image once in `<defs>` and
+`<use>`s it three times rather than carrying three copies. The same swap took the mobile wireframe
+from 255 KB to 44 KB. None of this applies to the shipping overlay, which carries no image at all.
+
 Three things stop it being worth doing now:
 
 - **The polygon is hand-placed, per model and per angle.** The photograph carries no geometry, so
   every part on every angle of every model is manual work. This is the same cost that killed the
-  traced vector hero, and outlining is a weaker justification than door animation was.
+  traced vector hero. Note what this cost is *not*: it does not scale with the number of warning
+  combinations, only with parts × angles × models. For one vehicle at one angle it is a handful of
+  polygons, which is why this is deferred rather than refused.
 - **There is no angle parameter in the typed API.** `images` is two flat strings,
   `exteriorImageUrl` and `interiorImageUrl`. The `angle=4` used here is an undocumented query
   param on the CAS URL — the same host that 403s default Node clients. Side-switching would be

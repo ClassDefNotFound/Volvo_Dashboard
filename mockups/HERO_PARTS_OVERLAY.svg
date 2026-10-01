@@ -1,0 +1,47 @@
+<svg viewBox="0 0 660 213" width="660" height="213" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    Hero part overlay - the SHIPPING shape of the hero-outline idea, and the answer to "would we
+    overlay two SVGs?".
+
+    NO. One overlay, every part in it, each with an id. The component styles the parts that need
+    attention and leaves the rest untouched. This is exactly how CAR_TOPDOWN_WIREFRAME.svg already
+    works, and it is why there is no combinatorial problem: eleven parts with two states each would
+    be 2048 pre-drawn scenario files, which is obviously untenable. Parts compose at render time.
+
+    THE PHOTO IS NOT IN HERE. In the app this is an inline <svg> positioned over an
+    <img src={exteriorImageUrl}>, both sized to the same box. That matters for three reasons:
+      - the overlay stays a few KB and stays diffable in review
+      - the photo is the live API image, not a baked-in asset that drifts from the real car
+      - swapping vehicle or angle replaces the photo without touching this file
+    mockups/HERO_OUTLINE_EXPLORATION.svg composites the two only so a human can look at it.
+
+    PARTS TILE, THEY DO NOT NEST. A door and its window share the beltline edge rather than the
+    window sitting inside the door. So "front-left door ajar" lights the lower panel, "front-left
+    window ajar" lights the glass, and BOTH lights the whole door - which is what you want it to
+    look like, with no special case for the overlap.
+
+    COORDINATE SPACE is the vehicle's alpha bounding box in volvo_exterior_4.png, (71,321) to
+    (1806,881), normalised to 660x213. Anchor the overlay to the image box, not the viewport.
+
+    HAND-PLACED, FOR THIS MODEL AT THIS ANGLE. Read off a percentage grid over that render. A
+    different model, trim or angle moves the parts out from under these polygons - see
+    notes/CAR_VISUALIZATION_DESIGN.md for why that is the thing to design around.
+
+    Only the near (left) flank exists here. Right-side parts are not visible at this angle and
+    must still be reported by the roll-up, never silently dropped.
+  -->
+  <g id="hero-parts" fill="none" stroke="none">
+    <polygon id="window-fl" points="369.6,14.9 448.8,11.7 448.8,63.9 330.0,63.9"/>
+    <polygon id="door-fl"   points="330.0,63.9 448.8,63.9 452.1,151.2 313.5,151.2"/>
+    <polygon id="window-rl" points="452.1,11.7 554.4,17.0 554.4,63.9 452.1,63.9"/>
+    <polygon id="door-rl"   points="452.1,63.9 554.4,63.9 561.0,149.1 452.1,151.2"/>
+  </g>
+  <!--
+    Intended styling, applied by the component rather than baked in here:
+      secure / not reported -> no stroke, no fill. A hero covered in outlines defeats the point;
+                               only exceptions are drawn.
+      needs attention       -> stroke var(color-status-critical) 2.5px, fill same at 0.16 alpha
+    Each polygon is wrapped in a <button> with an accessible name ("Front left door: ajar"),
+    the same contract as the top-down parts - see issue #15.
+  -->
+</svg>
