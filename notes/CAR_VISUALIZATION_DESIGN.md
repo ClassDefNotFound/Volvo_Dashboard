@@ -77,6 +77,11 @@ the passenger side and outline that door in red. It was prototyped against
 reading the door off a percentage grid tracks the A-pillar slope, the sill and the B-pillar well
 enough to read correctly.
 
+**The prototype is kept as `mockups/HERO_OUTLINE_EXPLORATION.svg`** so the decision has a picture
+attached rather than only a paragraph. Worth noting that the first attempt used a quadrilateral
+and was visibly wrong — it cut straight through the side window. The A-pillar rakes back, so a
+door is not a quad, and that is the kind of thing only a render tells you.
+
 Three things stop it being worth doing now:
 
 - **The polygon is hand-placed, per model and per angle.** The photograph carries no geometry, so
