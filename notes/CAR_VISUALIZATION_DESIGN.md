@@ -69,6 +69,33 @@ has since been **deleted** — it was never a build target, and keeping a reject
 invites someone to build from it. The Figma file still holds the frame *Desktop — Hero, TRACED
 VECTOR (rejected alternative)* if the reasoning ever needs re-reading.
 
+#### Outlining an affected part on the hero — explored 2026-09-30, deferred
+
+The question was whether a warning could be drawn *on* the hero: rear passenger door ajar, so show
+the passenger side and outline that door in red. It was prototyped against
+`mockups/volvo_exterior_4.png` and it **does work visually** — a five-point polygon placed by
+reading the door off a percentage grid tracks the A-pillar slope, the sill and the B-pillar well
+enough to read correctly.
+
+Three things stop it being worth doing now:
+
+- **The polygon is hand-placed, per model and per angle.** The photograph carries no geometry, so
+  every part on every angle of every model is manual work. This is the same cost that killed the
+  traced vector hero, and outlining is a weaker justification than door animation was.
+- **There is no angle parameter in the typed API.** `images` is two flat strings,
+  `exteriorImageUrl` and `interiorImageUrl`. The `angle=4` used here is an undocumented query
+  param on the CAS URL — the same host that 403s default Node clients. Side-switching would be
+  built on an unsupported URL shape.
+- **The failure mode is the decider.** A badge that is twenty pixels off still reads as "something
+  is wrong over there". An outline that is twenty pixels off draws a red box around the **wrong
+  door** — it asserts a precision the overlay cannot guarantee.
+
+Deferred rather than rejected. If it is revisited it belongs after M6 as polish, scoped explicitly
+to this VIN's model and angle, with the overlay treated as frozen art that silently misaligns the
+day the app sees a different vehicle. The practical middle ground remains the fraction-anchored
+badge already in #28, optionally with a soft halo over the region — a halo needs no exact
+silhouette and degrades gracefully when the framing drifts.
+
 Full 3D (React Three Fiber + glTF) was considered and declined for now: its blocker is asset
 licensing, not code — it needs a rigged `.glb` with separately named door meshes, which no amount of
 coding progress unblocks. It also costs ~150–200 kB gzipped against a 155 kB baseline, needs a

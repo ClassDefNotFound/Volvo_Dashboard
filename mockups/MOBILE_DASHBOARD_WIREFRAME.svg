@@ -30,10 +30,17 @@
   <rect x="231" y="15" width="124" height="30" rx="15" fill="#FFFFFF" stroke="#E6E2DC"/>
   <text x="293" y="34" text-anchor="middle" font-family="Jost" font-size="11" fill="#3C3C42">YV1·····4821  ▾</text>
 
-  <!-- Hero: the photographic exteriorImageUrl render. No vector parts, so nothing to outline. -->
+  <!--
+    Hero: the photographic exteriorImageUrl render. Standing in for the live API image with
+    volvo_exterior_4.png, the angle=4 render this framing was chosen against.
+
+    The href is RELATIVE, so this file only shows the car when viewed from inside mockups/.
+    The PNG is transparent outside the vehicle, so no clip path is needed - the car is placed by
+    its alpha bounding box (71,321)-(1806,881), which happens to be aspect 3.10 against this
+    box's 3.08. No vector parts here, so there is nothing to outline; see the design doc.
+  -->
   <rect x="18" y="78" width="339" height="110" rx="16" fill="#EAE6E0" stroke="#E2DED8"/>
-  <text x="187.5" y="130" text-anchor="middle" font-family="Jost" font-size="12" fill="#8E8A85">exteriorImageUrl</text>
-  <text x="187.5" y="148" text-anchor="middle" font-family="Jost" font-size="10" fill="#ACA8A2">photographic hero · identity, not triage</text>
+  <image href="volvo_exterior_4.png" x="16.6" y="23.5" width="349.7" height="196.7"/>
 
   <!-- Roll-up: reads the FULL summary. The second line names what the hero cannot show. -->
   <circle cx="24" cy="207" r="4" fill="#CF6679"/>
