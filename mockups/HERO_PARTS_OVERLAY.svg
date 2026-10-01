@@ -20,7 +20,7 @@
     window ajar" lights the glass, and BOTH lights the whole door - which is what you want it to
     look like, with no special case for the overlap.
 
-    COORDINATE SPACE is the vehicle's alpha bounding box in volvo_exterior_4.png, (71,321) to
+    COORDINATE SPACE is the vehicle's alpha bounding box in volvo_exterior_4.webp, (71,321) to
     (1806,881), normalised to 660x213. Anchor the overlay to the image box, not the viewport.
 
     HAND-PLACED, FOR THIS MODEL AT THIS ANGLE. Read off a percentage grid over that render. A

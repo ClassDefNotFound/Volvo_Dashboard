@@ -73,7 +73,7 @@ VECTOR (rejected alternative)* if the reasoning ever needs re-reading.
 
 The question was whether a warning could be drawn *on* the hero: rear passenger door ajar, so show
 the passenger side and outline that door in red. It was prototyped against
-`mockups/volvo_exterior_4.png` and it **does work visually** — a five-point polygon placed by
+`mockups/volvo_exterior_4.webp` and it **does work visually** — a five-point polygon placed by
 reading the door off a percentage grid tracks the A-pillar slope, the sill and the B-pillar well
 enough to read correctly.
 
@@ -108,6 +108,15 @@ A note on file size, since the mockups embed the render for viewing: **WebP, not
 against 303 KB for the same pixels, and the exploration defines the image once in `<defs>` and
 `<use>`s it three times rather than carrying three copies. The same swap took the mobile wireframe
 from 255 KB to 44 KB. None of this applies to the shipping overlay, which carries no image at all.
+
+The four source renders were converted to WebP q92 on 2026-09-30 as well: 2.8 MB down to 457 KB.
+Verified before swapping — in opaque pixels the maximum channel difference is 50 and the mean is
+1.5, invisible at 1:1 on the grille and headlight detail, and **the alpha channel is bit-identical**,
+which is the part that actually matters: every overlay coordinate in this design is derived from
+the alpha bounding box, so a lossy RGB channel is harmless but a shifted alpha would silently
+invalidate the polygons. Worth knowing that this does **not** shrink the repository — the PNGs
+stay in git history forever. It shrinks the checkout, and it stops the next person cloning and
+wondering why four reference images cost 2.8 MB.
 
 Three things stop it being worth doing now:
 

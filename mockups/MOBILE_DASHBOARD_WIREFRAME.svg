@@ -32,7 +32,7 @@
 
   <!--
     Hero: the photographic exteriorImageUrl render. Standing in for the live API image with
-    volvo_exterior_4.png, the angle=4 render this framing was chosen against.
+    volvo_exterior_4.webp, the angle=4 render this framing was chosen against.
 
     The image is EMBEDDED as a base64 data URI rather than referenced by a relative path. A
     relative href renders only when the viewer resolves files next to the SVG; GitHub's sanitizer
