@@ -41,11 +41,31 @@ This makes the two coexist safely: Tailwind can be installed on day one without 
 MUI app, so the migration proceeds one component per commit with a green build throughout, rather than
 as a big-bang rewrite.
 
-**Build tooling caveat:** this project runs `vite: npm:rolldown-vite@7.2.5` via npm `overrides`.
-`@tailwindcss/vite` uses `createResolver`, which rolldown does not support (the same issue currently
-affects Astro 6). **Default to `@tailwindcss/postcss` + `postcss.config.mjs`** — rolldown-vite retains
-Vite's PostCSS pipeline, so that path is safe. At this project's size the performance delta is
-unmeasurable. *(Spike outcome to be recorded here.)*
+**Build tooling — resolved by the #1 spike: use `@tailwindcss/vite`.** This project runs
+`vite: npm:rolldown-vite@7.2.5` via npm `overrides`. The concern going in was that
+`@tailwindcss/vite` uses `createResolver`, which rolldown does not support (the same issue affects
+Astro 6), and the expectation was a fall back to `@tailwindcss/postcss` + `postcss.config.mjs`.
+
+**That fallback turned out to be unnecessary.** Verified at `tailwindcss` / `@tailwindcss/vite`
+**4.3.3** against **rolldown-vite 7.2.5**, with `@import "tailwindcss";` at the top of
+`src/index.css`:
+
+- `npm run build` passes; the emitted CSS carries the `tailwindcss v4.3.3` banner and Preflight.
+- Source scanning works — arbitrary-value utilities on a probe component reached the output CSS.
+- `vite` dev serves `src/index.css` through the Tailwind transform with no resolver error.
+
+No `createResolver` failure on either path, so the plugin is the chosen route. **PostCSS remains the
+live fallback**: if a future rolldown-vite or Tailwind bump reintroduces a resolver error, swap
+`@tailwindcss/vite` for `@tailwindcss/postcss` plus a `postcss.config.mjs` exporting
+`{ plugins: { "@tailwindcss/postcss": {} } }` — rolldown-vite retains Vite's PostCSS pipeline, so
+that path stays safe. At this project's size the performance delta between the two is unmeasurable;
+do not spend time optimising the choice.
+
+**Preflight is in scope for #2, not here.** The spike's import pulls in Tailwind's base layer. The
+coexistence rule above still holds — Preflight lands in `@layer base`, so unlayered Emotion rules
+beat it on any MUI-styled element — but Preflight *does* reach elements MUI never styles (bare
+headings, lists, and the stock `index.css`/`App.css` rules). Reconciling that, and purging the stock
+Vite CSS, is #2's job and its visual-parity check.
 
 ### Theme: light and dark, Nordic Light as default
 The mockups specify Nordic Light; `src/themes/volvo_theme.ts` currently implements `mode: "dark"` and is
